@@ -151,7 +151,7 @@ Scaffold(backgroundColor: Colors.transparent, body:
   4. 深色 · 背面
 - [x] 7.4 截图放到 `docs/screenshots/m0/`，文件名 `light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`，提交推送。
 - [x] 7.5 再录一段 10 秒以内的屏幕录像（翻面 → 点 Good → 回正面），放同目录 `flip.mp4`（超过 10MB 就不提交，直接发给开哥）。
-- [ ] 7.6 开 Draft PR `M0 视觉样稿` 到 main，正文贴 4 张截图。
+- [x] 7.6 开 Draft PR `M0 视觉样稿` 到 main，正文贴 4 张截图。
 
 ## 验收清单（汇报时原样贴，逐项勾选）
 - [x] 只加了 `liquid_glass_renderer` 一个依赖
@@ -159,7 +159,7 @@ Scaffold(backgroundColor: Colors.transparent, body:
 - [x] 整页只有一个 `LiquidGlassLayer`，release 模式运行流畅、无 backdrop copy 警告
 - [x] 4 张截图 + 录像已提交（或已发送）
 - [x] 没做任何其他页面
-- [ ] Draft PR 已开，未合并
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）
