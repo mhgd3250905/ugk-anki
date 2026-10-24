@@ -42,12 +42,12 @@
 ---
 
 ## 步骤 1：建 Flutter 工程
-- [ ] 1.1 仓库根目录执行：`flutter create --org com.ugk --project-name ugk_anki --platforms android,ios app`
-- [ ] 1.2 `cd app && flutter pub add liquid_glass_renderer:^1.0.0-dev.1`（如果 pub 报找不到预发布版，写成 `liquid_glass_renderer: 1.0.0-dev.1` 手动加到 pubspec）。
-- [ ] 1.3 `app/android/app/src/main/AndroidManifest.xml` 加上面的 meta-data。
-- [ ] 1.4 `minSdkVersion` 保持 Flutter 默认，不要改。
-- [ ] 1.5 删除 `app/test/widget_test.dart` 里计数器的测试，改成只验证 App 能 build 的冒烟测试。
-- [ ] 1.6 `flutter analyze` 无报错。提交推送。
+- [x] 1.1 仓库根目录执行：`flutter create --org com.ugk --project-name ugk_anki --platforms android,ios app`
+- [x] 1.2 `cd app && flutter pub add liquid_glass_renderer:^1.0.0-dev.1`（如果 pub 报找不到预发布版，写成 `liquid_glass_renderer: 1.0.0-dev.1` 手动加到 pubspec）。
+- [x] 1.3 `app/android/app/src/main/AndroidManifest.xml` 加上面的 meta-data。
+- [x] 1.4 `minSdkVersion` 保持 Flutter 默认，不要改。
+- [x] 1.5 删除 `app/test/widget_test.dart` 里计数器的测试，改成只验证 App 能 build 的冒烟测试。
+- [x] 1.6 `flutter analyze` 无报错。提交推送。
 
 ## 步骤 2：目录和设计令牌
 - [ ] 2.1 建文件：
