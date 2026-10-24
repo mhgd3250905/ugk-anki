@@ -84,8 +84,8 @@ class UgkText   { static const cardFront = 30.0, cardBack = 20.0, button = 15.0,
 
 ## 步骤 3：背景（backdrop.dart）
 玻璃没有彩色背景就看不出效果，必须先做。
-- [ ] 3.1 `UgkBackdrop` 组件：全屏 `LinearGradient`（从左上到右下，用 tokens 里对应深浅色的三色），上面再叠 3 个模糊的彩色圆（`ImageFiltered` + `ImageFilter.blur(sigmaX: 60, sigmaY: 60)`，颜色取 newBlue/learnRed/reviewGreen，透明度 0.35，直径 260，位置：左上、右中、左下）。
-- [ ] 3.2 不要动画。提交推送。
+- [x] 3.1 `UgkBackdrop` 组件：全屏 `LinearGradient`（从左上到右下，用 tokens 里对应深浅色的三色），上面再叠 3 个模糊的彩色圆（`ImageFiltered` + `ImageFilter.blur(sigmaX: 60, sigmaY: 60)`，颜色取 newBlue/learnRed/reviewGreen，透明度 0.35，直径 260，位置：左上、右中、左下）。
+- [x] 3.2 不要动画。提交推送。
 
 ## 步骤 4：fake_data.dart
 ```dart
