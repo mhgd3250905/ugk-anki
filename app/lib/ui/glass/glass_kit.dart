@@ -45,13 +45,17 @@ class GlassPillButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final enabled = onTap != null;
-    final color = primary ? UgkColors.newBlue : onSurface.withValues(alpha: 0.7);
+    final color = primary
+        ? UgkColors.newBlue
+        : onSurface.withValues(alpha: 0.7);
     return GestureDetector(
       onTap: onTap,
       child: LiquidStretch(
         interactionScale: 0.96,
         child: LiquidGlass(
-          shape: const LiquidRoundedSuperellipse(borderRadius: UgkRadius.button),
+          shape: const LiquidRoundedSuperellipse(
+            borderRadius: UgkRadius.button,
+          ),
           child: SizedBox(
             height: height,
             child: Center(
@@ -165,7 +169,9 @@ class GlassSegmented<T> extends StatelessWidget {
                       ? UgkColors.newBlue
                       : onSurface.withValues(alpha: 0.7),
                   fontSize: UgkText.hint + 1,
-                  fontWeight: item == selected ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: item == selected
+                      ? FontWeight.w700
+                      : FontWeight.w500,
                 ),
               ),
             ),
@@ -261,7 +267,10 @@ Future<T?> _showGlassRoute<T>(
           alignment: alignment,
           child: Padding(
             padding: const EdgeInsets.all(UgkSpace.m),
-            child: Material(type: MaterialType.transparency, child: builder(ctx)),
+            child: Material(
+              type: MaterialType.transparency,
+              child: builder(ctx),
+            ),
           ),
         ),
       ),

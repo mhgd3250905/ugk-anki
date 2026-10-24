@@ -192,7 +192,11 @@ class _Done extends StatelessWidget {
               const SizedBox(height: UgkSpace.m),
               SizedBox(
                 width: 120,
-                child: GlassPillButton(label: '刷新', primary: true, onTap: onRefresh),
+                child: GlassPillButton(
+                  label: '刷新',
+                  primary: true,
+                  onTap: onRefresh,
+                ),
               ),
             ],
           ],

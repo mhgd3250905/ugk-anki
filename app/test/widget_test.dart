@@ -107,7 +107,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('新建卡组'), findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
-    await tester.enterText(editable(const ValueKey('prompt-field')), 'English::Dance');
+    await tester.enterText(
+      editable(const ValueKey('prompt-field')),
+      'English::Dance',
+    );
     await tester.tap(find.text('创建'));
     await settle();
     expect(find.text('Dance'), findsOneWidget);
@@ -122,8 +125,14 @@ void main() {
     expect(find.text('选择卡组'), findsNothing);
     expect(find.text('English::Dance'), findsOneWidget);
 
-    await tester.enterText(editable(const ValueKey('field-$kBasicTypeId-0')), 'hi');
-    await tester.enterText(editable(const ValueKey('field-$kBasicTypeId-1')), '嗨');
+    await tester.enterText(
+      editable(const ValueKey('field-$kBasicTypeId-0')),
+      'hi',
+    );
+    await tester.enterText(
+      editable(const ValueKey('field-$kBasicTypeId-1')),
+      '嗨',
+    );
     await tester.tap(find.byKey(const ValueKey('save')));
     await settle();
     expect(find.text('已添加 1 张卡片'), findsOneWidget);
