@@ -19,7 +19,7 @@
 ---
 
 ## 步骤 1：建文件
-- [ ] 1.1 建以下文件：
+- [x] 1.1 建以下文件：
 ```
 packages/core/lib/src/notes/fields.dart
 packages/core/lib/src/notes/tags.dart
@@ -33,9 +33,9 @@ packages/core/test/notes_tags_guid_test.dart
 packages/core/test/notes_template_test.dart
 packages/core/test/notes_card_gen_test.dart
 ```
-- [ ] 1.2 在 `lib/ugk_core.dart` 末尾加 7 行 export（按字母序）：`src/notes/card_gen.dart`、`cloze.dart`、`fields.dart`、`guid.dart`、`note_type.dart`、`tags.dart`、`template.dart`。
-- [ ] 1.3 把第 9 节的 4 个测试文件原样复制进去。
-- [ ] 1.4 提交推送（此时测试会编译失败，正常）。
+- [x] 1.2 在 `lib/ugk_core.dart` 末尾加 7 行 export（按字母序）：`src/notes/card_gen.dart`、`cloze.dart`、`fields.dart`、`guid.dart`、`note_type.dart`、`tags.dart`、`template.dart`。
+- [x] 1.3 把第 9 节的 4 个测试文件原样复制进去。
+- [x] 1.4 提交推送（此时测试会编译失败，正常）。
 
 ## 步骤 2：fields.dart
 ```dart
