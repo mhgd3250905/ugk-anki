@@ -158,7 +158,7 @@ RenderResult renderTemplate(String template, Map<String, String> fields,
    - 其他 → 当字段名，输出 `fields[名字] ?? ''`（不存在的字段输出空）；value 非空时 used = true
    - 词表走完时如果 `closing != null`（区段没闭合），抛 `FormatException('模板格式错误')`。
 3. `renderTemplate` 返回 `RenderResult(walk(null), used)`。
-- [ ] 6.1 实现，`dart test test/notes_template_test.dart` 全绿。提交推送。
+- [x] 6.1 实现，`dart test test/notes_template_test.dart` 全绿。提交推送。
 
 ## 步骤 7：card_gen.dart
 ```dart
