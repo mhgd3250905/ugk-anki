@@ -525,8 +525,8 @@ AnswerResult answerCard(Card card, Rating rating, {
    - `timeTakenMs = min(timeTakenMs, 60000)`
    - `type`：旧卡 newCard/learn → learn；review → review；relearn → relearn
 
-- [ ] 8.1 写完。
-- [ ] 8.2 `test/answer_test.dart`（fuzz: false，preset 默认，today = 100，nowMs = 1_000_000_000_000）：
+- [x] 8.1 写完。
+- [x] 8.2 `test/answer_test.dart`（fuzz: false，preset 默认，today = 100，nowMs = 1_000_000_000_000）：
   - 新卡（id 1，type newCard，queue newCard，due 5）按 Good → type learn，queue learn，due = nowMs + 600000，left 1，reps 1；revlog：button 3，ivl -600，lastIvl 0，factor 0，type learn
   - 上面结果再按 Good（nowMs + 600000，today 仍 100）→ type review，queue review，ivl 1，due 101，ease 2500，left 0；revlog：ivl 1，lastIvl -600，factor 2500，type learn
   - review 卡（ivl 31，due 100，ease 2500，lapses 0）按 Again → type relearn，queue learn，due = nowMs + 600000，ivl 1，ease 2300，lapses 1，left 1；revlog：ivl -600，lastIvl 31，factor 2300，type review
@@ -534,7 +534,7 @@ AnswerResult answerCard(Card card, Rating rating, {
   - review 卡（ivl 10，due 96，即迟 4 天，ease 2500）按 Good → ivl 30，due 130
   - timeTakenMs 传 90000 → revlog.timeTakenMs == 60000
   - learnSteps `[1440]`（1 天），新卡按 Again → queue dayLearn，due 101
-- [ ] 8.3 全绿。提交推送。
+- [x] 8.3 全绿。提交推送。
 
 ---
 
