@@ -23,7 +23,11 @@ class GlassIconButton extends StatelessWidget {
             dimension: UgkSize.barHeight,
             child: GlassGlowLayer(
               child: GlassGlow(
-                child: Icon(icon, size: 18, color: color.withValues(alpha: 0.85)),
+                child: Icon(
+                  icon,
+                  size: 18,
+                  color: color.withValues(alpha: 0.85),
+                ),
               ),
             ),
           ),

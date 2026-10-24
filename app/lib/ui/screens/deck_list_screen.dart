@@ -108,9 +108,8 @@ class _DeckListScreenState extends State<DeckListScreen> {
       await RepoScope.of(context).createDeck(trimmed, nowMs: nowMs());
     } on StateError {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('卡组「$trimmed」已存在')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('卡组「$trimmed」已存在')));
       }
     }
     _reload();
@@ -213,9 +212,8 @@ class _Num extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = Theme.of(
-      context,
-    ).colorScheme.onSurface.withValues(alpha: 0.25);
+    final muted = Theme.of(context).colorScheme.onSurface
+        .withValues(alpha: 0.25);
     return SizedBox(
       width: 40,
       child: Text(

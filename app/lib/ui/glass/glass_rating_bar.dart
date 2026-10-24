@@ -75,7 +75,9 @@ class _ShowAnswerButton extends StatelessWidget {
       child: LiquidStretch(
         interactionScale: 0.98,
         child: LiquidGlass(
-          shape: const LiquidRoundedSuperellipse(borderRadius: UgkRadius.button),
+          shape: const LiquidRoundedSuperellipse(
+            borderRadius: UgkRadius.button,
+          ),
           child: GlassGlowLayer(
             child: GlassGlow(
               child: Center(
@@ -152,7 +154,9 @@ class _RatingButton extends StatelessWidget {
       child: LiquidStretch(
         interactionScale: 0.96,
         child: LiquidGlass(
-          shape: const LiquidRoundedSuperellipse(borderRadius: UgkRadius.button),
+          shape: const LiquidRoundedSuperellipse(
+            borderRadius: UgkRadius.button,
+          ),
           child: GlassGlowLayer(
             child: GlassGlow(
               child: Column(

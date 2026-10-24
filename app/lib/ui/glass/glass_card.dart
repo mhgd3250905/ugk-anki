@@ -51,8 +51,10 @@ class GlassCard extends StatelessWidget {
                     transitionBuilder: (child, animation) => FadeTransition(
                       opacity: animation,
                       child: ScaleTransition(
-                        scale: Tween<double>(begin: 0.98, end: 1)
-                            .animate(animation),
+                        scale: Tween<double>(
+                          begin: 0.98,
+                          end: 1,
+                        ).animate(animation),
                         child: child,
                       ),
                     ),
@@ -62,7 +64,10 @@ class GlassCard extends StatelessWidget {
                             back: back,
                             key: const ValueKey('back'),
                           )
-                        : _FrontFace(front: front, key: const ValueKey('front')),
+                        : _FrontFace(
+                            front: front,
+                            key: const ValueKey('front'),
+                          ),
                   ),
                 ),
               ],

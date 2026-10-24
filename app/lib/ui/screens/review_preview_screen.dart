@@ -31,7 +31,9 @@ class _ReviewPreviewScreenState extends State<ReviewPreviewScreen> {
           Positioned.fill(
             child: LiquidGlassLayer(
               fake: UgkGlass.useFake,
-              settings: LiquidGlassSettings.ios27Regular(brightness: brightness),
+              settings: LiquidGlassSettings.ios27Regular(
+                brightness: brightness,
+              ),
               defaultAppearance: LiquidGlassAppearance.ios27Regular(
                 brightness: brightness,
               ),
