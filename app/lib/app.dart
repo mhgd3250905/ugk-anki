@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'ui/screens/review_preview_screen.dart';
+import 'package:ugk_data/ugk_data.dart';
+
+import 'data/repo_scope.dart';
+import 'ui/screens/deck_list_screen.dart';
 import 'ui/theme/tokens.dart';
 
 /// ugk-anki 应用
 class UgkAnkiApp extends StatelessWidget {
-  const UgkAnkiApp({super.key});
+  const UgkAnkiApp({required this.repo, super.key});
+
+  final UgkRepository repo;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class UgkAnkiApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true, brightness: Brightness.light),
       darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
       themeMode: ThemeMode.system,
-      home: const ReviewPreviewScreen(),
+      home: const DeckListScreen(),
       builder: (context, child) {
         final brightness = MediaQuery.platformBrightnessOf(context);
         final iconBrightness = brightness == Brightness.dark
@@ -30,7 +35,7 @@ class UgkAnkiApp extends StatelessWidget {
             systemNavigationBarColor: UgkColors.transparent,
             systemNavigationBarIconBrightness: iconBrightness,
           ),
-          child: child!,
+          child: RepoScope(repo: repo, child: child!),
         );
       },
     );
