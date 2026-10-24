@@ -191,10 +191,10 @@ Scaffold(backgroundColor: Colors.transparent, body:
 - [x] 9.2 重新截 4 张，**覆盖** `docs/screenshots/m0/` 下同名文件：`light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`。
 - [x] 9.3 对照组：把 `tokens.dart` 的 `useFake` **临时**改成 `false`，release 运行，只截一张浅色背面存为 `docs/screenshots/m0/light-back-real.png`；截完把 `useFake` 改回 `true`，确认 `git diff app/` 为空。
 - [x] 9.4 重新录 `flip.mp4`（10 秒内：显示答案 → 点良好 → 回正面），覆盖旧文件。
-- [ ] 9.5 提交推送：`M0.1: 真机截图`。在 PR #4 下评论贴 5 张新图。
+- [x] 9.5 提交推送：`M0.1: 真机截图`。在 PR #4 下评论贴 5 张新图。
 
 ## M0.1 验收清单（汇报时原样贴）
-- [ ] `app/lib/` 没有任何改动（除了 9.3 临时改动已还原）
-- [ ] `flutter analyze` 无问题
-- [ ] 4 张截图 + light-back-real.png + flip.mp4 已提交
-- [ ] PR #4 仍为 Draft，未合并
+- [x] `app/lib/` 没有任何改动（除了 9.3 临时改动已还原）
+- [x] `flutter analyze` 无问题
+- [x] 4 张截图 + light-back-real.png + flip.mp4 已提交
+- [x] PR #4 仍为 Draft，未合并
