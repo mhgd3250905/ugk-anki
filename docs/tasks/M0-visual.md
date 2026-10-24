@@ -100,8 +100,8 @@ const fakeLabels = ['<1m', '<6m', '<10m', '4d'];   // Again / Hard / Good / Easy
 ## 步骤 5：玻璃组件
 所有组件都**不自己建 LiquidGlassLayer**，而是用 `LiquidGlass(...)` / `LiquidGlass.grouped(...)`，由页面统一包一层 layer。
 
-- [ ] 5.1 `GlassIconButton`：参数 `IconData icon`、`VoidCallback onTap`。`LiquidGlass(shape: LiquidOval(), child: SizedBox.square(dimension: 44, child: Icon(...)))`，外面包 `GestureDetector`，按下用 `GlassGlow`。
-- [ ] 5.2 `GlassTopBar`：参数 `title`、`newCount`、`learnCount`、`reviewCount`、`onBack`。布局：左边 `GlassIconButton(Icons.arrow_back_ios_new)`；中间一个胶囊玻璃（`LiquidRoundedSuperellipse(borderRadius: UgkRadius.bar)`，高 44），里面一行：卡组名（取 `::` 后最后一段，即 `Dance`）+ 三个数字（颜色 newBlue / learnRed / reviewGreen，字重 600）；右边 `GlassIconButton(Icons.more_horiz)`。三个玻璃放进一个 `LiquidGlassBlendGroup(blend: 20)`，用 `LiquidGlass.grouped`。
+- [x] 5.1 `GlassIconButton`：参数 `IconData icon`、`VoidCallback onTap`。`LiquidGlass(shape: LiquidOval(), child: SizedBox.square(dimension: 44, child: Icon(...)))`，外面包 `GestureDetector`，按下用 `GlassGlow`。
+- [x] 5.2 `GlassTopBar`：参数 `title`、`newCount`、`learnCount`、`reviewCount`、`onBack`。布局：左边 `GlassIconButton(Icons.arrow_back_ios_new)`；中间一个胶囊玻璃（`LiquidRoundedSuperellipse(borderRadius: UgkRadius.bar)`，高 44），里面一行：卡组名（取 `::` 后最后一段，即 `Dance`）+ 三个数字（颜色 newBlue / learnRed / reviewGreen，字重 600）；右边 `GlassIconButton(Icons.more_horiz)`。三个玻璃放进一个 `LiquidGlassBlendGroup(blend: 20)`，用 `LiquidGlass.grouped`。
 - [ ] 5.3 `GlassCard`：参数 `front`、`back`、`tag`、`bool showBack`、`VoidCallback onTap`。一个大玻璃 `LiquidRoundedSuperellipse(borderRadius: UgkRadius.card)`，宽 = 屏宽 − 2×UgkSpace.l，高 = 屏高 × 0.5。内容：
   - 正面：`front` 居中，字号 cardFront，字重 600。
   - 背面：上方 `front`（字号 22，透明度 0.6），中间一条 1px 分隔线（透明度 0.2），下方 `back`（字号 cardBack），最下方 `tag` 小胶囊（字号 12）。
