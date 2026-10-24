@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:ugk_data/ugk_data.dart';
 
+import '../../data/app_files.dart';
 import '../../data/clock.dart';
 import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
@@ -9,6 +12,7 @@ import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
 import '../theme/tokens.dart';
 import 'add_note_screen.dart';
+import 'import_screen.dart';
 import 'study_screen.dart';
 
 /// 一行卡组的显示数据
@@ -97,6 +101,110 @@ class _DeckListScreenState extends State<DeckListScreen> {
     _reload();
   }
 
+  Future<void> _more() async {
+    final i = await showGlassActions(
+      context,
+      title: '数据',
+      actions: const [
+        GlassAction(Icons.file_download_outlined, '导入 CSV / TXT'),
+        GlassAction(Icons.file_upload_outlined, '导出全部笔记为 TXT'),
+        GlassAction(Icons.save_outlined, '备份整个库'),
+        GlassAction(Icons.restore, '从备份恢复', danger: true),
+      ],
+    );
+    if (!mounted || i == null) return;
+    try {
+      switch (i) {
+        case 0:
+          await _importCsv();
+        case 1:
+          await _exportCsv();
+        case 2:
+          await _backup();
+        case 3:
+          await _restore();
+      }
+    } on FormatException catch (e) {
+      if (mounted) showGlassToast(context, e.message, warn: true);
+    } catch (e) {
+      if (mounted) showGlassToast(context, '操作失败：$e', warn: true);
+    }
+    _reload();
+  }
+
+  Future<void> _importCsv() async {
+    final file = await AppFiles.instance.pick();
+    if (file == null || !mounted) return;
+    final table = parseCsv(utf8.decode(file.bytes, allowMalformed: true));
+    if (table.rows.isEmpty) {
+      showGlassToast(context, '文件里没有可导入的内容', warn: true);
+      return;
+    }
+    final first = _decks?.firstOrNull?.deck.id ?? kDefaultDeckId;
+    final result = await Navigator.of(context).push<ImportResult>(
+      MaterialPageRoute(
+        builder: (_) => ImportScreen(
+          table: table,
+          fileName: file.name,
+          initialDeckId: first,
+        ),
+      ),
+    );
+    if (result == null || !mounted) return;
+    final skipped = [
+      if (result.duplicates > 0) '跳过重复 ${result.duplicates}',
+      if (result.empty > 0) '空白 ${result.empty}',
+    ];
+    showGlassToast(
+      context,
+      '导入 ${result.notes} 条笔记（${result.cards} 张卡片）'
+      '${skipped.isEmpty ? '' : '，${skipped.join('、')}'}',
+      warn: result.notes == 0,
+    );
+  }
+
+  Future<void> _exportCsv() async {
+    final text = await RepoScope.of(context).exportCsv();
+    final count = parseCsv(text).rows.length;
+    if (count == 0) {
+      if (mounted) showGlassToast(context, '还没有笔记可以导出', warn: true);
+      return;
+    }
+    final saved = await AppFiles.instance.save(
+      'ugk-anki-${fileStamp()}.txt',
+      utf8.encode(text),
+      'text/plain',
+    );
+    if (saved && mounted) showGlassToast(context, '已导出 $count 条笔记');
+  }
+
+  Future<void> _backup() async {
+    final json = await RepoScope.of(context).backupJson(nowMs: nowMs());
+    final saved = await AppFiles.instance.save(
+      'ugk-anki-backup-${fileStamp()}.json',
+      utf8.encode(json),
+      'application/json',
+    );
+    if (saved && mounted) showGlassToast(context, '备份已保存');
+  }
+
+  Future<void> _restore() async {
+    final file = await AppFiles.instance.pick();
+    if (file == null || !mounted) return;
+    final ok = await showGlassConfirm(
+      context,
+      title: '从备份恢复？',
+      message: '当前所有卡组、卡片和复习记录都会被「${file.name}」覆盖，无法撤销。建议先备份一次。',
+      confirmLabel: '覆盖恢复',
+      danger: true,
+    );
+    if (!ok || !mounted) return;
+    await RepoScope.of(context).restoreJson(
+      utf8.decode(file.bytes, allowMalformed: true),
+    );
+    if (mounted) showGlassToast(context, '已从备份恢复');
+  }
+
   @override
   Widget build(BuildContext context) {
     final decks = _decks;
@@ -113,6 +221,8 @@ class _DeckListScreenState extends State<DeckListScreen> {
                 ),
                 const SizedBox(width: UgkSpace.s),
                 GlassIconButton(icon: Icons.add, onTap: _add),
+                const SizedBox(width: UgkSpace.s),
+                GlassIconButton(icon: Icons.more_horiz, onTap: _more),
               ],
             ),
           ),

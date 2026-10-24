@@ -32,6 +32,7 @@ class GlassPillButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.primary = false,
+    this.danger = false,
     this.height = UgkSize.barHeight,
     super.key,
   });
@@ -39,13 +40,18 @@ class GlassPillButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final bool primary;
+
+  /// 危险操作：红色粗字
+  final bool danger;
   final double height;
 
   @override
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final enabled = onTap != null;
-    final color = primary
+    final color = danger
+        ? UgkColors.again
+        : primary
         ? UgkColors.newBlue
         : onSurface.withValues(alpha: 0.7);
     return GestureDetector(
@@ -64,7 +70,7 @@ class GlassPillButton extends StatelessWidget {
                 style: TextStyle(
                   color: enabled ? color : color.withValues(alpha: 0.35),
                   fontSize: UgkText.button,
-                  fontWeight: primary ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: primary || danger ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ),
@@ -560,4 +566,144 @@ class _GlassToastHostState extends State<_GlassToastHost>
       ),
     );
   }
+}
+
+/// 操作面板里的一项
+class GlassAction {
+  const GlassAction(this.icon, this.label, {this.danger = false});
+
+  final IconData icon;
+  final String label;
+
+  /// 危险操作用红色
+  final bool danger;
+}
+
+/// 底部操作面板（替代 showModalBottomSheet / PopupMenu）。返回选中的序号，取消返回 null。
+Future<int?> showGlassActions(
+  BuildContext context, {
+  required String title,
+  required List<GlassAction> actions,
+}) {
+  return _showGlassRoute<int>(
+    context,
+    alignment: Alignment.bottomCenter,
+    builder: (ctx) {
+      final onSurface = Theme.of(ctx).colorScheme.onSurface;
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: GlassPanel(
+          radius: UgkRadius.card,
+          padding: const EdgeInsets.fromLTRB(
+            UgkSpace.l,
+            UgkSpace.l,
+            UgkSpace.l,
+            UgkSpace.s,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DialogTitle(title),
+              const SizedBox(height: UgkSpace.s),
+              for (var i = 0; i < actions.length; i++)
+                GestureDetector(
+                  key: ValueKey('action-$i'),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => Navigator.of(ctx).pop(i),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Row(
+                      children: [
+                        Icon(
+                          actions[i].icon,
+                          size: 20,
+                          color: actions[i].danger
+                              ? UgkColors.again
+                              : onSurface.withValues(alpha: 0.6),
+                        ),
+                        const SizedBox(width: UgkSpace.m),
+                        Expanded(
+                          child: Text(
+                            actions[i].label,
+                            style: TextStyle(
+                              color: actions[i].danger
+                                  ? UgkColors.again
+                                  : onSurface,
+                              fontSize: UgkText.field,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+/// 确认弹窗（替代 AlertDialog）。确认返回 true。
+Future<bool> showGlassConfirm(
+  BuildContext context, {
+  required String title,
+  required String message,
+  String confirmLabel = '确定',
+  bool danger = false,
+}) async {
+  final ok = await _showGlassRoute<bool>(
+    context,
+    builder: (ctx) {
+      final onSurface = Theme.of(ctx).colorScheme.onSurface;
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: GlassPanel(
+          radius: UgkRadius.card,
+          padding: const EdgeInsets.all(UgkSpace.l),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DialogTitle(title),
+              const SizedBox(height: UgkSpace.s),
+              Text(
+                message,
+                style: TextStyle(
+                  color: onSurface.withValues(alpha: 0.7),
+                  fontSize: UgkText.button - 1,
+                  height: 1.45,
+                ),
+              ),
+              const SizedBox(height: UgkSpace.l),
+              Row(
+                children: [
+                  Expanded(
+                    child: GlassPillButton(
+                      label: '取消',
+                      onTap: () => Navigator.of(ctx).pop(false),
+                    ),
+                  ),
+                  const SizedBox(width: UgkSpace.ratingGap),
+                  Expanded(
+                    child: GlassPillButton(
+                      key: const ValueKey('confirm'),
+                      label: confirmLabel,
+                      primary: !danger,
+                      danger: danger,
+                      onTap: () => Navigator.of(ctx).pop(true),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  return ok ?? false;
 }
