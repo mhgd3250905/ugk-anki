@@ -10,6 +10,7 @@ import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
+import '../labels.dart';
 import '../theme/tokens.dart';
 import 'add_note_screen.dart';
 import 'import_screen.dart';
@@ -87,7 +88,7 @@ class _DeckListScreenState extends State<DeckListScreen> {
     final name = await showGlassPrompt(
       context,
       title: '新建卡组',
-      hint: '例如 English::Dance',
+      hint: '例如 英语::口语（:: 表示下一级）',
       confirmLabel: '创建',
     );
     final trimmed = name?.trim() ?? '';
@@ -96,7 +97,7 @@ class _DeckListScreenState extends State<DeckListScreen> {
       await RepoScope.of(context).createDeck(trimmed, nowMs: nowMs());
     } on StateError {
       if (mounted) {
-        showGlassToast(context, '卡组「$trimmed」已存在', warn: true);
+        showGlassToast(context, '卡组「${deckLabel(trimmed)}」已存在', warn: true);
       }
     }
     _reload();
@@ -231,7 +232,9 @@ class _DeckListScreenState extends State<DeckListScreen> {
               ],
             ),
           ),
-          const SizedBox(height: UgkSpace.l),
+          const SizedBox(height: UgkSpace.m),
+          const _CountHeader(),
+          const SizedBox(height: UgkSpace.xs),
           Expanded(
             child: decks == null
                 ? const GlassLoading()
@@ -277,7 +280,7 @@ class _DeckTile extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    parts.last,
+                    deckLabel(parts.last),
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: color,
@@ -298,6 +301,51 @@ class _DeckTile extends StatelessWidget {
   }
 }
 
+/// 三列数字的说明：新卡 / 在学 / 待复习
+class _CountHeader extends StatelessWidget {
+  const _CountHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = Theme.of(context).colorScheme.onSurface.withValues(
+      alpha: 0.5,
+    );
+    Widget cell(String text, Color dot) => SizedBox(
+      width: 48,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 3),
+          Text(
+            text,
+            style: TextStyle(
+              color: muted,
+              fontSize: UgkText.tag,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: UgkSpace.m),
+      child: Row(
+        children: [
+          const Spacer(),
+          cell('新卡', UgkColors.newBlue),
+          cell('在学', UgkColors.learnRed),
+          cell('待复习', UgkColors.reviewGreen),
+        ],
+      ),
+    );
+  }
+}
+
 class _Num extends StatelessWidget {
   const _Num(this.value, this.color);
 
@@ -309,7 +357,7 @@ class _Num extends StatelessWidget {
     final muted = Theme.of(context).colorScheme.onSurface
         .withValues(alpha: 0.25);
     return SizedBox(
-      width: 40,
+      width: 48,
       child: Text(
         '$value',
         textAlign: TextAlign.right,

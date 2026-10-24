@@ -46,9 +46,9 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('卡组'), findsOneWidget);
-    expect(find.text('Default'), findsOneWidget);
+    expect(find.text('默认'), findsOneWidget);
 
-    await tester.tap(find.text('Default'));
+    await tester.tap(find.text('默认'));
     await tester.pumpAndSettle();
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 300)),

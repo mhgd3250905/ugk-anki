@@ -127,7 +127,7 @@ class _ImportScreenState extends State<ImportScreen> {
       title: '导入到卡组',
       items: _decks,
       selected: _decks.firstWhere((d) => d.id == _deckId),
-      labelOf: (d) => d.name,
+      labelOf: (d) => deckLabel(d.name),
     );
     if (picked != null && mounted) setState(() => _deckId = picked.id);
   }
@@ -162,7 +162,7 @@ class _ImportScreenState extends State<ImportScreen> {
     final color = Theme.of(context).colorScheme.onSurface;
     final deckName = _decks
         .where((d) => d.id == _deckId)
-        .map((d) => d.name)
+        .map((d) => deckLabel(d.name))
         .firstOrNull;
     return GlassPage(
       child: Column(

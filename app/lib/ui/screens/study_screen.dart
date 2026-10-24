@@ -8,6 +8,7 @@ import '../card_text.dart';
 import '../glass/glass_card.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
+import '../labels.dart';
 import '../glass/glass_rating_bar.dart';
 import '../glass/glass_top_bar.dart';
 import '../theme/tokens.dart';
@@ -112,7 +113,7 @@ class _StudyScreenState extends State<StudyScreen> {
       child: Column(
         children: [
           GlassTopBar(
-            title: widget.deckName,
+            title: deckLabel(widget.deckName),
             newCount: q?.newCount ?? 0,
             learnCount: q?.learnCount ?? 0,
             reviewCount: q?.reviewCount ?? 0,

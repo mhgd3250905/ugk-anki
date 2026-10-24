@@ -187,7 +187,7 @@ void main() {
     await settle(tester);
     expect(find.text('这不是本应用的备份文件'), findsOneWidget);
     await finishToast(tester);
-    expect(find.text('Default'), findsOneWidget);
+    expect(find.text('默认'), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox());
     await tester.runAsync(() => db.close());

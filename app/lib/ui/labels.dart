@@ -55,3 +55,7 @@ String? addNoteProblem(NoteType type, List<String> fields) {
   if (first.isEmpty) return '${fieldLabel(type.fields.first.name)}还没填';
   return null;
 }
+
+/// 卡组显示名：内置的 Default 显示成「默认」
+String deckLabel(String name) =>
+    name.split('::').map((p) => p == 'Default' ? '默认' : p).join('::');
