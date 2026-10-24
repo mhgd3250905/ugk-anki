@@ -32,7 +32,8 @@ TextEditingValue applyCloze(TextEditingValue v) {
       : TextSelection.collapsed(offset: v.text.length);
   final picked = sel.textInside(v.text);
   final open = '{{c$n::';
-  final text = '${sel.textBefore(v.text)}$open$picked}}${sel.textAfter(v.text)}';
+  final text =
+      '${sel.textBefore(v.text)}$open$picked}}${sel.textAfter(v.text)}';
   final cursor = sel.start + open.length + picked.length;
   return TextEditingValue(
     text: text,

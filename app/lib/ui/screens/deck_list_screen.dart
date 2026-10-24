@@ -307,9 +307,8 @@ class _CountHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = Theme.of(context).colorScheme.onSurface.withValues(
-      alpha: 0.5,
-    );
+    final muted = Theme.of(context).colorScheme.onSurface
+        .withValues(alpha: 0.5);
     Widget cell(String text, Color dot) => SizedBox(
       width: 48,
       child: Row(
