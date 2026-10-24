@@ -5,6 +5,7 @@ import 'package:ugk_data/ugk_data.dart';
 import '../../data/clock.dart';
 import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
+import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
 import '../theme/tokens.dart';
 
@@ -58,7 +59,6 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     final type = _type;
     if (type == null || _saving) return;
     setState(() => _saving = true);
-    final messenger = ScaffoldMessenger.of(context);
     try {
       final ids = await RepoScope.of(context).addNote(
         noteTypeId: type.id,
@@ -70,11 +70,11 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       for (final c in _fields) {
         c.clear();
       }
-      messenger.showSnackBar(SnackBar(content: Text('已添加 ${ids.length} 张卡片')));
+      if (mounted) showGlassToast(context, '已添加 ${ids.length} 张卡片');
     } on StateError {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('这条笔记不会生成卡片，请先填写正面（填空题要写 {{c1::...}}）')),
-      );
+      if (mounted) {
+        showGlassToast(context, '不会生成卡片：正面为空，或填空没写 {{c1::…}}', warn: true);
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -89,10 +89,26 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     super.dispose();
   }
 
+  Future<void> _pickDeck() async {
+    final current = _decks.firstWhere((d) => d.id == _deckId);
+    final picked = await showGlassPicker<DeckRow>(
+      context,
+      title: '选择卡组',
+      items: _decks,
+      selected: current,
+      labelOf: (d) => d.name,
+    );
+    if (picked != null && mounted) setState(() => _deckId = picked.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final type = _type;
     final color = Theme.of(context).colorScheme.onSurface;
+    final deckName = _decks
+        .where((d) => d.id == _deckId)
+        .map((d) => d.name)
+        .firstOrNull;
     return GlassPage(
       child: Column(
         children: [
@@ -102,89 +118,65 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
               icon: Icons.arrow_back_ios_new,
               onTap: () => Navigator.of(context).maybePop(),
             ),
-            trailing: GlassIconButton(
-              icon: _saving ? Icons.hourglass_empty : Icons.check,
-              onTap: _save,
+            trailing: SizedBox(
+              width: 84,
+              child: GlassPillButton(
+                key: const ValueKey('save'),
+                label: '添加',
+                primary: true,
+                onTap: _saving ? null : _save,
+              ),
             ),
           ),
           const SizedBox(height: UgkSpace.l),
           Expanded(
             child: type == null
-                ? const Center(child: CircularProgressIndicator())
+                ? const GlassLoading()
                 : ListView(
                     children: [
                       GlassPanel(
+                        radius: UgkRadius.card - 8,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             _Label('类型', color),
-                            Wrap(
-                              spacing: UgkSpace.s,
-                              runSpacing: UgkSpace.s,
-                              children: [
-                                for (final t in _types)
-                                  ChoiceChip(
-                                    label: Text(t.name),
-                                    selected: t.id == type.id,
-                                    onSelected: (_) =>
-                                        setState(() => _selectType(t)),
-                                  ),
-                              ],
+                            GlassSegmented<NoteType>(
+                              items: _types,
+                              selected: type,
+                              labelOf: (t) => t.name,
+                              onSelect: (t) => setState(() => _selectType(t)),
                             ),
                             const SizedBox(height: UgkSpace.m),
                             _Label('卡组', color),
-                            DropdownButton<int>(
-                              value: _deckId,
-                              isExpanded: true,
-                              underline: const SizedBox.shrink(),
-                              items: [
-                                for (final d in _decks)
-                                  DropdownMenuItem(
-                                    value: d.id,
-                                    child: Text(d.name),
-                                  ),
-                              ],
-                              onChanged: (v) {
-                                if (v != null) setState(() => _deckId = v);
-                              },
+                            GlassSelectRow(
+                              key: const ValueKey('deck-select'),
+                              value: deckName ?? '',
+                              onTap: _pickDeck,
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: UgkSpace.m),
-                      for (var i = 0; i < type.fields.length; i++) ...[
-                        GlassPanel(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                      GlassPanel(
+                        radius: UgkRadius.card - 8,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (var i = 0; i < type.fields.length; i++) ...[
+                              if (i > 0) const SizedBox(height: UgkSpace.m),
                               _Label(type.fields[i].name, color),
-                              TextField(
+                              GlassTextField(
                                 key: ValueKey('field-${type.id}-$i'),
                                 controller: _fields[i],
-                                minLines: 1,
                                 maxLines: 6,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                ),
                               ),
                             ],
-                          ),
-                        ),
-                        const SizedBox(height: UgkSpace.m),
-                      ],
-                      GlassPanel(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                            const SizedBox(height: UgkSpace.m),
                             _Label('标签（空格分隔）', color),
-                            TextField(
+                            GlassTextField(
                               key: const ValueKey('tags'),
                               controller: _tags,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                isDense: true,
-                              ),
+                              hint: '例如 街舞 邀约',
                             ),
                           ],
                         ),

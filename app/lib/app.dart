@@ -18,8 +18,8 @@ class UgkAnkiApp extends StatelessWidget {
     return MaterialApp(
       title: 'ugk-anki',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, brightness: Brightness.light),
-      darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
+      theme: _theme(Brightness.light),
+      darkTheme: _theme(Brightness.dark),
       themeMode: ThemeMode.system,
       home: const DeckListScreen(),
       builder: (context, child) {
@@ -41,3 +41,20 @@ class UgkAnkiApp extends StatelessWidget {
     );
   }
 }
+
+/// 统一主题：主色用我们的蓝，去掉 Material 水波纹，光标和选区也用蓝色
+ThemeData _theme(Brightness brightness) => ThemeData(
+  useMaterial3: true,
+  brightness: brightness,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: UgkColors.newBlue,
+    brightness: brightness,
+  ),
+  splashFactory: NoSplash.splashFactory,
+  highlightColor: UgkColors.transparent,
+  textSelectionTheme: TextSelectionThemeData(
+    cursorColor: UgkColors.newBlue,
+    selectionColor: UgkColors.newBlue.withValues(alpha: 0.25),
+    selectionHandleColor: UgkColors.newBlue,
+  ),
+);

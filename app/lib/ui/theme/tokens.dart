@@ -40,6 +40,7 @@ class UgkRadius {
   static const button = 22.0;
   static const bar = 22.0;
   static const pill = 999.0;
+  static const field = 14.0;
 }
 
 /// 间距令牌
@@ -65,7 +66,9 @@ class UgkText {
       ratingInterval = 15.0,
       ratingName = 12.0,
       barTitle = 16.0,
-      count = 14.0;
+      count = 14.0,
+      field = 16.0,
+      dialogTitle = 20.0;
 }
 
 /// 玻璃渲染开关

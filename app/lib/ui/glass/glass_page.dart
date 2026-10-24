@@ -3,6 +3,7 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 import '../theme/backdrop.dart';
 import '../theme/tokens.dart';
+import 'glass_kit.dart';
 
 /// 所有页面共用的底：背景 + 铺满整屏的玻璃层 + SafeArea
 class GlassPage extends StatelessWidget {
@@ -12,7 +13,6 @@ class GlassPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.platformBrightnessOf(context);
     return Scaffold(
       backgroundColor: UgkColors.transparent,
       resizeToAvoidBottomInset: true,
@@ -20,14 +20,7 @@ class GlassPage extends StatelessWidget {
         children: [
           const Positioned.fill(child: UgkBackdrop()),
           Positioned.fill(
-            child: LiquidGlassLayer(
-              fake: UgkGlass.useFake,
-              settings: LiquidGlassSettings.ios27Regular(
-                brightness: brightness,
-              ),
-              defaultAppearance: LiquidGlassAppearance.ios27Regular(
-                brightness: brightness,
-              ),
+            child: GlassLayer(
               child: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(

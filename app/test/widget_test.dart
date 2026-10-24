@@ -79,4 +79,67 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester.runAsync(() => db.close());
   });
+
+  testWidgets('新建卡组弹窗 + 添加页选卡组 + 提示条', (tester) async {
+    late UgkDatabase db;
+    late UgkRepository repo;
+    await tester.runAsync(() async {
+      db = UgkDatabase(NativeDatabase.memory());
+      repo = UgkRepository(db);
+      await repo.initIfEmpty(nowMs: nowMs());
+    });
+    Future<void> settle() async {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 200)),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Finder editable(Key key) => find.descendant(
+      of: find.byKey(key),
+      matching: find.byType(EditableText),
+    );
+
+    await tester.pumpWidget(UgkAnkiApp(repo: repo));
+    await settle();
+
+    await tester.tap(find.byIcon(Icons.create_new_folder_outlined));
+    await tester.pumpAndSettle();
+    expect(find.text('新建卡组'), findsOneWidget);
+    expect(find.byType(AlertDialog), findsNothing);
+    await tester.enterText(editable(const ValueKey('prompt-field')), 'English::Dance');
+    await tester.tap(find.text('创建'));
+    await settle();
+    expect(find.text('Dance'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.add));
+    await settle();
+    await tester.tap(find.byKey(const ValueKey('deck-select')));
+    await tester.pumpAndSettle();
+    expect(find.text('选择卡组'), findsOneWidget);
+    await tester.tap(find.text('English::Dance').last);
+    await tester.pumpAndSettle();
+    expect(find.text('选择卡组'), findsNothing);
+    expect(find.text('English::Dance'), findsOneWidget);
+
+    await tester.enterText(editable(const ValueKey('field-$kBasicTypeId-0')), 'hi');
+    await tester.enterText(editable(const ValueKey('field-$kBasicTypeId-1')), '嗨');
+    await tester.tap(find.byKey(const ValueKey('save')));
+    await settle();
+    expect(find.text('已添加 1 张卡片'), findsOneWidget);
+    expect(find.byType(SnackBar), findsNothing);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+    expect(find.text('已添加 1 张卡片'), findsNothing);
+
+    await tester.runAsync(() async {
+      final dance = (await repo.decks()).firstWhere(
+        (d) => d.name == 'English::Dance',
+      );
+      expect((await repo.cardsOfDeck(dance.id)).length, 1);
+    });
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.runAsync(() => db.close());
+  });
 }

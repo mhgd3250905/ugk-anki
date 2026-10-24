@@ -6,6 +6,7 @@ import '../../data/clock.dart';
 import '../../data/repo_scope.dart';
 import '../card_text.dart';
 import '../glass/glass_card.dart';
+import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
 import '../glass/glass_rating_bar.dart';
 import '../glass/glass_top_bar.dart';
@@ -96,9 +97,7 @@ class _StudyScreenState extends State<StudyScreen> {
         timeTakenMs: _watch.elapsedMilliseconds,
       );
       if (result.leechTriggered && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('这张卡忘了太多次，已标记 leech，建议改写一下')),
-        );
+        showGlassToast(context, '这张卡忘了太多次，已标记 leech，建议改写', warn: true);
       }
       await _load();
     } finally {
@@ -122,7 +121,7 @@ class _StudyScreenState extends State<StudyScreen> {
           const SizedBox(height: UgkSpace.l),
           Expanded(
             child: _loading
-                ? const Center(child: CircularProgressIndicator())
+                ? const GlassLoading()
                 : _card == null
                 ? _Done(nextLearnDueMs: _nextLearnDueMs, onRefresh: _load)
                 : GlassCard(
@@ -191,7 +190,10 @@ class _Done extends StatelessWidget {
             ),
             if (due != null) ...[
               const SizedBox(height: UgkSpace.m),
-              TextButton(onPressed: onRefresh, child: const Text('刷新')),
+              SizedBox(
+                width: 120,
+                child: GlassPillButton(label: '刷新', primary: true, onTap: onRefresh),
+              ),
             ],
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:ugk_data/ugk_data.dart';
 import '../../data/clock.dart';
 import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
+import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
 import '../theme/tokens.dart';
 import 'add_note_screen.dart';
@@ -78,38 +79,19 @@ class _DeckListScreenState extends State<DeckListScreen> {
   }
 
   Future<void> _createDeck() async {
-    final controller = TextEditingController();
-    final name = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('新建卡组'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(hintText: '例如 English::Dance'),
-          onSubmitted: (v) => Navigator.of(ctx).pop(v),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(controller.text),
-            child: const Text('创建'),
-          ),
-        ],
-      ),
+    final name = await showGlassPrompt(
+      context,
+      title: '新建卡组',
+      hint: '例如 English::Dance',
+      confirmLabel: '创建',
     );
-    controller.dispose();
     final trimmed = name?.trim() ?? '';
     if (trimmed.isEmpty || !mounted) return;
     try {
       await RepoScope.of(context).createDeck(trimmed, nowMs: nowMs());
     } on StateError {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('卡组「$trimmed」已存在')));
+        showGlassToast(context, '卡组「$trimmed」已存在', warn: true);
       }
     }
     _reload();
@@ -137,17 +119,14 @@ class _DeckListScreenState extends State<DeckListScreen> {
           const SizedBox(height: UgkSpace.l),
           Expanded(
             child: decks == null
-                ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: _reload,
-                    child: ListView.separated(
-                      itemCount: decks.length,
-                      separatorBuilder: (_, _) =>
-                          const SizedBox(height: UgkSpace.ratingGap),
-                      itemBuilder: (_, i) => _DeckTile(
-                        summary: decks[i],
-                        onTap: () => _open(decks[i]),
-                      ),
+                ? const GlassLoading()
+                : ListView.separated(
+                    itemCount: decks.length,
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: UgkSpace.ratingGap),
+                    itemBuilder: (_, i) => _DeckTile(
+                      summary: decks[i],
+                      onTap: () => _open(decks[i]),
                     ),
                   ),
           ),
