@@ -102,6 +102,41 @@ void main() {
     await tester.runAsync(() => db.close());
   });
 
+  testWidgets('表头里的 tags 列自动映射；二进制文件被拒', (tester) async {
+    await tester.runAsync(() async {
+      db = UgkDatabase(NativeDatabase.memory());
+      repo = UgkRepository(db);
+      await repo.initIfEmpty(nowMs: nowMs());
+    });
+    await tester.pumpWidget(UgkAnkiApp(repo: repo));
+    await settle(tester);
+
+    files.next = PickedFile(
+      'video.mp4',
+      Uint8List.fromList([0, 0, 0, 24, 102, 116, 121, 112, 255, 254, 0, 1]),
+    );
+    await menu(tester, 0);
+    expect(find.text('这不是文本文件，请选 CSV 或 TXT'), findsOneWidget);
+    await finishToast(tester);
+
+    files.next = PickedFile(
+      'h.csv',
+      Uint8List.fromList(utf8.encode('front,back,tags\nq,a,t1\n')),
+    );
+    await menu(tester, 0);
+    expect(find.text('第 1 列 · q'), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const ValueKey('map-tags')));
+    await tester.pumpAndSettle();
+    expect(find.text('第 3 列 · t1'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('do-import')));
+    await settle(tester);
+    expect(find.text('导入 1 条笔记（1 张卡片）'), findsOneWidget);
+    await finishToast(tester);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.runAsync(() => db.close());
+  });
+
   testWidgets('导出、备份、确认弹窗后恢复', (tester) async {
     await tester.runAsync(() async {
       db = UgkDatabase(NativeDatabase.memory());
@@ -150,7 +185,7 @@ void main() {
     await menu(tester, 3);
     await tester.tap(find.byKey(const ValueKey('confirm')));
     await settle(tester);
-    expect(find.text('不是 ugk-anki 备份文件'), findsOneWidget);
+    expect(find.text('这不是本应用的备份文件'), findsOneWidget);
     await finishToast(tester);
     expect(find.text('Default'), findsOneWidget);
 

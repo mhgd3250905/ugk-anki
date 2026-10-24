@@ -51,6 +51,7 @@ class _DeckListScreenState extends State<DeckListScreen> {
     final repo = RepoScope.of(context);
     final now = nowMs();
     final offset = utcOffsetMinutes();
+    await repo.ensureParentDecks(nowMs: now);
     final result = <DeckSummary>[];
     for (final d in await repo.decks()) {
       final q = await repo.todayQueue(
@@ -126,8 +127,8 @@ class _DeckListScreenState extends State<DeckListScreen> {
       }
     } on FormatException catch (e) {
       if (mounted) showGlassToast(context, e.message, warn: true);
-    } catch (e) {
-      if (mounted) showGlassToast(context, '操作失败：$e', warn: true);
+    } catch (_) {
+      if (mounted) showGlassToast(context, '没能完成，请再试一次', warn: true);
     }
     _reload();
   }
@@ -135,7 +136,12 @@ class _DeckListScreenState extends State<DeckListScreen> {
   Future<void> _importCsv() async {
     final file = await AppFiles.instance.pick();
     if (file == null || !mounted) return;
-    final table = parseCsv(utf8.decode(file.bytes, allowMalformed: true));
+    final text = utf8.decode(file.bytes, allowMalformed: true);
+    if (_looksBinary(text)) {
+      showGlassToast(context, '这不是文本文件，请选 CSV 或 TXT', warn: true);
+      return;
+    }
+    final table = parseCsv(text);
     if (table.rows.isEmpty) {
       showGlassToast(context, '文件里没有可导入的内容', warn: true);
       return;
@@ -316,4 +322,12 @@ class _Num extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 前 4K 字符里有 NUL 或大量乱码时认为不是文本
+bool _looksBinary(String text) {
+  final head = text.length > 4096 ? text.substring(0, 4096) : text;
+  if (head.contains('\u0000')) return true;
+  final bad = '\uFFFD'.allMatches(head).length;
+  return head.isNotEmpty && bad * 20 > head.length;
 }

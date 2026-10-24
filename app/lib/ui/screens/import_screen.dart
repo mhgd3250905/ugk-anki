@@ -7,6 +7,7 @@ import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
+import '../labels.dart';
 import '../theme/tokens.dart';
 
 /// CSV 导入设置页。导入成功后 pop 出 [ImportResult]。
@@ -58,8 +59,14 @@ class _ImportScreenState extends State<ImportScreen> {
       _types = types;
       _decks = decks;
       if (!decks.any((d) => d.id == _deckId)) _deckId = decks.first.id;
-      _selectType(types.first);
       _header = _looksLikeHeader(types);
+      if (_header && _tagsCol == null) {
+        final i = _t.rows.first.indexWhere(
+          (c) => const {'tags', '标签'}.contains(c.trim().toLowerCase()),
+        );
+        if (i >= 0) _tagsCol = i;
+      }
+      _selectType(types.first);
     });
   }
 
@@ -231,7 +238,7 @@ class _ImportScreenState extends State<ImportScreen> {
                             GlassSegmented<NoteType>(
                               items: _types,
                               selected: type,
-                              labelOf: (t) => t.name,
+                              labelOf: typeLabel,
                               onSelect: (t) => setState(() => _selectType(t)),
                             ),
                             const SizedBox(height: UgkSpace.m),
@@ -256,13 +263,13 @@ class _ImportScreenState extends State<ImportScreen> {
                             children: [
                               for (var i = 0; i < type.fields.length; i++) ...[
                                 if (i > 0) const SizedBox(height: UgkSpace.m),
-                                _Label(type.fields[i].name, color),
+                                _Label(fieldLabel(type.fields[i].name), color),
                                 GlassSelectRow(
                                   key: ValueKey('map-$i'),
                                   value: _colLabel(_fieldCols[i]),
                                   onTap: () async {
                                     final c = await _pickColumn(
-                                      type.fields[i].name,
+                                      fieldLabel(type.fields[i].name),
                                       _fieldCols[i],
                                     );
                                     if (mounted) {
@@ -308,7 +315,7 @@ class _ImportScreenState extends State<ImportScreen> {
                               onSelect: (h) => setState(() => _html = h),
                             ),
                             const SizedBox(height: UgkSpace.m),
-                            _Label('重复笔记（第一个字段相同）', color),
+                            _Label('重复内容（第一个输入框相同）', color),
                             GlassSegmented<DuplicateMode>(
                               items: DuplicateMode.values,
                               selected: _dups,

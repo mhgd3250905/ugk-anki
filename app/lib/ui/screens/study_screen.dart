@@ -97,7 +97,7 @@ class _StudyScreenState extends State<StudyScreen> {
         timeTakenMs: _watch.elapsedMilliseconds,
       );
       if (result.leechTriggered && mounted) {
-        showGlassToast(context, '这张卡忘了太多次，已标记 leech，建议改写', warn: true);
+        showGlassToast(context, '这张卡已经忘了很多次，换个更好记的写法试试', warn: true);
       }
       await _load();
     } finally {

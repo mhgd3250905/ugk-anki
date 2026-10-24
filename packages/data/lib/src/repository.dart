@@ -17,6 +17,10 @@ const int kClozeTypeId = 3;
 const int kRolloverHour = 4;
 
 /// 仓库：App 只通过它读写数据
+/// 规范化卡组名：按 `::` 分层，每层 trim，去掉空层
+String normalizeDeckName(String name) =>
+    name.split('::').map((p) => p.trim()).where((p) => p.isNotEmpty).join('::');
+
 class UgkRepository {
   /// 用数据库创建仓库
   UgkRepository(this.db);
@@ -99,16 +103,52 @@ class UgkRepository {
   Future<List<DeckRow>> decks() =>
       (db.select(db.decks)..orderBy([(d) => OrderingTerm.asc(d.name)])).get();
 
-  /// 新建卡组，返回 id；重名抛 StateError
+  /// 新建卡组，返回 id；重名抛 StateError。
+  /// 名字按 `::` 分层，每层去掉首尾空格；缺少的上级卡组会一起建出来（与 Anki 一致）。
   Future<int> createDeck(
     String name, {
     required int nowMs,
     int configId = kDefaultConfigId,
-  }) async {
-    final exists = await (db.select(
-      db.decks,
-    )..where((d) => d.name.equals(name))).getSingleOrNull();
-    if (exists != null) throw StateError('卡组已存在: $name');
+  }) {
+    return db.transaction(() async {
+      final norm = normalizeDeckName(name);
+      if (norm.isEmpty) throw ArgumentError('卡组名不能为空');
+      if (await _deckId(norm) != null) throw StateError('卡组已存在: $norm');
+      final id = await _insertDeck(norm, nowMs, configId);
+      await _ensureParents(norm, nowMs, configId);
+      return id;
+    });
+  }
+
+  /// 按名字找卡组，没有就新建（含上级），返回 id
+  Future<int> ensureDeck(String name, {required int nowMs}) {
+    return db.transaction(() async {
+      final norm = normalizeDeckName(name);
+      if (norm.isEmpty) throw ArgumentError('卡组名不能为空');
+      final existing = await _deckId(norm);
+      if (existing != null) return existing;
+      final id = await _insertDeck(norm, nowMs, kDefaultConfigId);
+      await _ensureParents(norm, nowMs, kDefaultConfigId);
+      return id;
+    });
+  }
+
+  /// 补齐所有缺失的上级卡组（修复旧数据）。返回补建的数量。
+  Future<int> ensureParentDecks({required int nowMs}) {
+    return db.transaction(() async {
+      var added = 0;
+      for (final d in await decks()) {
+        added += await _ensureParents(d.name, nowMs, d.configId);
+      }
+      return added;
+    });
+  }
+
+  Future<int?> _deckId(String name) async => (await (db.select(
+    db.decks,
+  )..where((d) => d.name.equals(name))).getSingleOrNull())?.id;
+
+  Future<int> _insertDeck(String name, int nowMs, int configId) async {
     final maxId = await _maxId(db.decks, db.decks.id);
     final id = max(nowMs, maxId + 1);
     await db
@@ -117,6 +157,19 @@ class UgkRepository {
           DecksCompanion.insert(id: Value(id), name: name, configId: configId),
         );
     return id;
+  }
+
+  Future<int> _ensureParents(String name, int nowMs, int configId) async {
+    final parts = name.split('::');
+    var added = 0;
+    for (var i = 1; i < parts.length; i++) {
+      final parent = parts.take(i).join('::');
+      if (await _deckId(parent) == null) {
+        await _insertDeck(parent, nowMs, configId);
+        added++;
+      }
+    }
+    return added;
   }
 
   /// 卡组使用的 preset

@@ -114,6 +114,7 @@ void main() {
     await tester.tap(find.text('创建'));
     await settle();
     expect(find.text('Dance'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget); // 自动补的上级卡组
 
     await tester.tap(find.byIcon(Icons.add));
     await settle();

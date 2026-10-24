@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:test/test.dart';
 import 'package:ugk_core/ugk_core.dart';
@@ -61,17 +62,44 @@ void main() {
   });
 
   group('卡组与 preset', () {
-    test('新建卡组：id 取时间戳，按名字排序，重名报错', () async {
-      final id = await repo.createDeck('English::Dance', nowMs: t0 + 5000);
+    test('新建卡组：id 取时间戳，按名字排序，自动补上级，重名报错', () async {
+      final id = await repo.createDeck(' English :: Dance ', nowMs: t0 + 5000);
       expect(id, t0 + 5000);
       expect((await repo.decks()).map((d) => d.name), [
         'Default',
+        'English',
         'English::Dance',
       ]);
+      expect(
+        () => repo.createDeck('English', nowMs: t0 + 6000),
+        throwsStateError,
+      );
+      expect(await repo.ensureDeck('English', nowMs: t0 + 7000), isNot(id));
+      expect(await repo.ensureDeck('English::Dance', nowMs: t0 + 7000), id);
       expect(
         () => repo.createDeck('English::Dance', nowMs: t0 + 6000),
         throwsStateError,
       );
+    });
+
+    test('补齐旧数据里缺失的上级卡组', () async {
+      await repo.db
+          .into(repo.db.decks)
+          .insert(
+            DecksCompanion.insert(
+              id: const Value(99),
+              name: 'A::B::C',
+              configId: kDefaultConfigId,
+            ),
+          );
+      expect(await repo.ensureParentDecks(nowMs: t0), 2);
+      expect(await repo.ensureParentDecks(nowMs: t0), 0);
+      expect((await repo.decks()).map((d) => d.name), [
+        'A',
+        'A::B',
+        'A::B::C',
+        'Default',
+      ]);
     });
 
     test('同一毫秒建两个卡组，id 递增', () async {

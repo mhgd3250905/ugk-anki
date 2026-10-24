@@ -7,6 +7,7 @@ import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
+import '../labels.dart';
 import '../theme/tokens.dart';
 
 /// 添加笔记页
@@ -58,6 +59,11 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   Future<void> _save() async {
     final type = _type;
     if (type == null || _saving) return;
+    final problem = addNoteProblem(type, [for (final c in _fields) c.text]);
+    if (problem != null) {
+      showGlassToast(context, problem, warn: true);
+      return;
+    }
     setState(() => _saving = true);
     try {
       final ids = await RepoScope.of(context).addNote(
@@ -73,7 +79,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       if (mounted) showGlassToast(context, '已添加 ${ids.length} 张卡片');
     } on StateError {
       if (mounted) {
-        showGlassToast(context, '不会生成卡片：正面为空，或填空没写 {{c1::…}}', warn: true);
+        showGlassToast(context, '这条内容生成不了卡片，检查一下第一个输入框', warn: true);
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -143,7 +149,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             GlassSegmented<NoteType>(
                               items: _types,
                               selected: type,
-                              labelOf: (t) => t.name,
+                              labelOf: typeLabel,
                               onSelect: (t) => setState(() => _selectType(t)),
                             ),
                             const SizedBox(height: UgkSpace.m),
@@ -164,12 +170,46 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           children: [
                             for (var i = 0; i < type.fields.length; i++) ...[
                               if (i > 0) const SizedBox(height: UgkSpace.m),
-                              _Label(type.fields[i].name, color),
+                              _Label(fieldLabel(type.fields[i].name), color),
                               GlassTextField(
                                 key: ValueKey('field-${type.id}-$i'),
                                 controller: _fields[i],
                                 maxLines: 6,
+                                hint: i == 0 && type.kind == NoteKind.cloze
+                                    ? '例如：巴黎是法国的首都'
+                                    : null,
                               ),
+                              if (i == 0 && type.kind == NoteKind.cloze) ...[
+                                const SizedBox(height: UgkSpace.s),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 96,
+                                      child: GlassPillButton(
+                                        key: const ValueKey('cloze'),
+                                        label: '挖空',
+                                        primary: true,
+                                        height: 40,
+                                        onTap: () => setState(
+                                          () => _fields[0].value = applyCloze(
+                                            _fields[0].value,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: UgkSpace.m),
+                                    Expanded(
+                                      child: Text(
+                                        '选中要考的词，点挖空',
+                                        style: TextStyle(
+                                          color: color.withValues(alpha: 0.5),
+                                          fontSize: UgkText.hint,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ],
                             const SizedBox(height: UgkSpace.m),
                             _Label('标签（空格分隔）', color),

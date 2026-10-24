@@ -105,7 +105,7 @@ extension ImportExport on UgkRepository {
       final typesByName = {
         for (final t in types.values) t.name.toLowerCase(): t,
       };
-      final deckIds = {for (final d in await decks()) d.name: d.id};
+      final deckIds = <String, int>{};
       final special = {
         o.tagsColumn ?? table.tagsColumn,
         table.notetypeColumn,
@@ -165,7 +165,7 @@ extension ImportExport on UgkRepository {
         if (table.deckColumn != null) {
           final name = cell(row, table.deckColumn).trim();
           if (name.isNotEmpty) {
-            deckId = deckIds[name] ??= await createDeck(name, nowMs: clock);
+            deckId = deckIds[name] ??= await ensureDeck(name, nowMs: clock);
           }
         }
         // 重复
@@ -289,14 +289,14 @@ extension ImportExport on UgkRepository {
     if (decoded is! Map ||
         decoded['magic'] != kBackupMagic ||
         decoded['version'] != kBackupVersion) {
-      throw const FormatException('不是 ugk-anki 备份文件');
+      throw const FormatException('这不是本应用的备份文件');
     }
     if (decoded['schemaVersion'] != db.schemaVersion) {
-      throw const FormatException('备份来自不兼容的版本');
+      throw const FormatException('这个备份来自不兼容的版本，无法恢复');
     }
     final tables = decoded['tables'];
     if (tables is! Map || !_backupTables.every(tables.containsKey)) {
-      throw const FormatException('备份文件不完整');
+      throw const FormatException('备份文件不完整，可能已损坏');
     }
     await db.transaction(() async {
       for (final t in _backupTables.reversed) {

@@ -269,15 +269,21 @@ Future<T?> _showGlassRoute<T>(
     barrierLabel: '关闭',
     barrierColor: const Color(0x33000000),
     transitionDuration: const Duration(milliseconds: 260),
+    // 软键盘弹出时整体上移到键盘上方，空间不够就滚动
     pageBuilder: (ctx, _, _) => GlassLayer(
-      child: SafeArea(
-        child: Align(
-          alignment: alignment,
-          child: Padding(
-            padding: const EdgeInsets.all(UgkSpace.m),
-            child: Material(
-              type: MaterialType.transparency,
-              child: builder(ctx),
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: SafeArea(
+          child: Align(
+            alignment: alignment,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(UgkSpace.m),
+              child: Material(
+                type: MaterialType.transparency,
+                child: builder(ctx),
+              ),
             ),
           ),
         ),
