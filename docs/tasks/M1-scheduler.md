@@ -471,7 +471,7 @@ class RevlogEntry {
   final RevlogType type;
 }
 ```
-- [ ] 7.1 写完，带 `==`/`hashCode`/`copyWith`（RevlogEntry 不需要 copyWith）。提交推送。
+- [x] 7.1 写完，带 `==`/`hashCode`/`copyWith`（RevlogEntry 不需要 copyWith）。提交推送。
 
 ---
 
