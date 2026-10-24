@@ -7,3 +7,5 @@ export 'src/scheduler/learning_steps.dart';
 export 'src/scheduler/next_states.dart';
 export 'src/scheduler/preset.dart';
 export 'src/scheduler/states.dart';
+export 'src/queue/day.dart';
+export 'src/queue/study_queue.dart';
