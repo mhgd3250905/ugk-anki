@@ -124,9 +124,9 @@ docs/samples/m6-sample.csv                走查用样例（4 行，含引号、
 主控本地：data `+33` 全绿，app analyze 0 问题、`+14` 全绿。
 
 ## 步骤 5：编译检查
-- [ ] 5.1 `git pull`，`cd packages/data && dart test` → `+33: All tests passed!`
-- [ ] 5.2 仓库根 `dart format app/lib app/test packages/data/lib packages/data/test`，有变化单独提交 `M6.1: dart format`
-- [ ] 5.3 `cd app && flutter analyze` → 无问题；`flutter test` → `+14: All tests passed!`
+- [x] 5.1 `git pull`，`cd packages/data && dart test` → `+33: All tests passed!`
+- [x] 5.2 仓库根 `dart format app/lib app/test packages/data/lib packages/data/test`，有变化单独提交 `M6.1: dart format`
+- [x] 5.3 `cd app && flutter analyze` → 无问题；`flutter test` → `+14: All tests passed!`
 
 ## 步骤 6：真机走查（覆盖安装，不卸载）
 - [ ] 6.1 首页：`Default` 显示为「默认」；出现 `English` 卡组，`Dance` 缩进在它下面，「默认」与 `English` 左边对齐；数字上方有「新卡 / 在学 / 待复习」，和下面的数字右对齐。**截图 `m61-decks.png`**
