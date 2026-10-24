@@ -62,7 +62,7 @@ docs/samples/m6-sample.csv                走查用样例（4 行，含引号、
 ## 步骤 4：入库
 - [x] 4.1 4 张截图放 `docs/screenshots/m6/`：`m6-menu.png`、`m6-import.png`、`m6-confirm.png`、`m6-dark-import.png`
 - [x] 4.2 走查记录逐条填写 3.1～3.13
-- [ ] 4.3 提交推送（`M6: 真机走查与截图`），开 **Draft PR** `feat/m6-io` → `main`，标题 `M6 导入导出与备份`
+- [x] 4.3 提交推送（`M6: 真机走查与截图`），开 **Draft PR** `feat/m6-io` → `main`，标题 `M6 导入导出与备份`
 
 ## 验收清单（汇报时原样贴）
 - [ ] data 32 个测试全绿
