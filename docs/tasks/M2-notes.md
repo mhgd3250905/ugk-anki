@@ -131,7 +131,7 @@ NoteType clozeNoteType(int id);
 | clozeNoteType | `Cloze` | cloze | Text(0), Back Extra(1) | `Cloze` / 0 / `{{cloze:Text}}` / `{{cloze:Text}}<br>{{Back Extra}}` |
 
 三个的 css 都是 `kDefaultCss`，sortFieldIdx 都是 0。
-- [ ] 5.1 步骤 4、5 写完，提交推送。
+- [x] 5.1 步骤 4、5 写完，提交推送。
 
 ## 步骤 6：template.dart（模板渲染，本任务最难的一步）
 ```dart
