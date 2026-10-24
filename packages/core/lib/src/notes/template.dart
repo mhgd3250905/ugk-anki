@@ -84,12 +84,12 @@ RenderResult renderTemplate(
         final name = tag.substring(5).trim();
         final value = fields[name] ?? '';
         out.write(stripHtml(value));
-        if (value.isNotEmpty) used = true;
+        if (fieldIsNonEmpty(value)) used = true;
         continue;
       }
       final value = fields[tag] ?? '';
       out.write(value);
-      if (value.isNotEmpty) used = true;
+      if (fieldIsNonEmpty(value)) used = true;
     }
     if (closing != null) throw const FormatException('模板格式错误');
     return out.toString();

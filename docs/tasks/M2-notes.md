@@ -176,7 +176,7 @@ String sortFieldValue(NoteType type, List<String> fields);
   - standard：找 `t.ord == ord` 的模板，找不到抛 `ArgumentError`；q = `renderTemplate(qfmt, map)`；a = `renderTemplate(afmt, map, frontSide: q.text, answer: true)`。
   - 返回 `RenderedCard(q.text, a.text)`。
 - `sortFieldValue` = `stripHtml(fields[type.sortFieldIdx]).trim()`。
-- [ ] 7.1 实现，`dart test test/notes_card_gen_test.dart` 全绿。提交推送。
+- [x] 7.1 实现，`dart test test/notes_card_gen_test.dart` 全绿。提交推送。
 
 ## 步骤 8：总检查
 - [ ] 8.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
