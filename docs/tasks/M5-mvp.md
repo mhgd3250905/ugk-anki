@@ -47,11 +47,11 @@ M0 的玻璃组件（`lib/ui/glass/glass_card.dart` 等）和 `review_preview_sc
 新建卡组弹窗 → `showGlassPrompt`（玻璃卡片 + 圆角输入框 + 两个胶囊按钮）；SnackBar → 顶部玻璃提示条 `showGlassToast`；
 类型 ChoiceChip → `GlassSegmented`；卡组 DropdownButton → `GlassSelectRow` + 底部玻璃选择面板 `showGlassPicker`；
 下划线输入框 → `GlassTextField`；转圈 → 不显示；「刷新」→ 玻璃胶囊按钮；主题主色改成我们的蓝、去掉水波纹。
-- [ ] 1B.1 `git pull`（如果你本地有未推送的走查记录，先提交再 pull）
-- [ ] 1B.2 `flutter pub get`、`dart format lib test`（有变化单独提交 `M5: dart format 2`）
-- [ ] 1B.3 `flutter analyze` → `No issues found!`
-- [ ] 1B.4 `flutter test` → `+5: All tests passed!`（新增 1 个：弹窗 + 选择面板 + 提示条）
-- [ ] 1B.5 提交推送（`M5: 设计组件更新后编译与测试通过`）。**之前已经做过的真机走查作废，从步骤 2 重新开始。**
+- [x] 1B.1 `git pull`（如果你本地有未推送的走查记录，先提交再 pull）
+- [x] 1B.2 `flutter pub get`、`dart format lib test`（有变化单独提交 `M5: dart format 2`）
+- [x] 1B.3 `flutter analyze` → `No issues found!`
+- [x] 1B.4 `flutter test` → `+5: All tests passed!`（新增 1 个：弹窗 + 选择面板 + 提示条）
+- [x] 1B.5 提交推送（`M5: 设计组件更新后编译与测试通过`）。**之前已经做过的真机走查作废，从步骤 2 重新开始。**
 
 ## 步骤 2：真机安装
 - [ ] 2.1 **先在手机上卸载旧的 ugk-anki**（M0 版本没有数据库，避免残留）。
