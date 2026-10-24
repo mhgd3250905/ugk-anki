@@ -88,7 +88,7 @@ StudyQueue buildQueue({required List<Card> cards, required int today,
 5. `reviewLimit = max(0, preset.reviewsPerDay - reviewsDoneToday)`；`reviewPart` = `[...dayLearn, ...reviews]` 的前 reviewLimit 张。
 6. `newLimit = min(preset.newPerDay - newDoneToday, reviewLimit - reviewPart.length)`，小于 0 取 0；`newCards` = active 中 `queue == CardQueue.newCard` 按 (due, id) 升序的前 newLimit 张。
 7. 返回 `StudyQueue(learning: learning, main: intersperse(reviewPart, newCards))`。
-- [ ] 5.1 步骤 3～5 写完，`dart test test/queue_build_test.dart` 全绿。提交推送。
+- [x] 5.1 步骤 3～5 写完，`dart test test/queue_build_test.dart` 全绿。提交推送。
 
 ## 步骤 5.9：总检查
 - [ ] 5.9.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
