@@ -48,7 +48,7 @@ packages/data/test/repository_test.dart  19 个测试
 
 ## 步骤 5：收尾
 - [x] 5.1 勾选本文件，提交推送：`M4: 本机验证通过`。
-- [ ] 5.2 开 **Draft PR**：`feat/m4-data` → `main`，标题 `M4 数据库与仓库层`，正文贴验收清单。
+- [x] 5.2 开 **Draft PR**：`feat/m4-data` → `main`，标题 `M4 数据库与仓库层`，正文贴验收清单。
 
 ## 验收清单（汇报时原样贴）
 - [x] build_runner 重新生成后 `database.g.dart` 无差异（或已提交差异并注明）
@@ -57,7 +57,7 @@ packages/data/test/repository_test.dart  19 个测试
 - [x] `packages/data`：`+19: All tests passed!`
 - [x] `packages/core`：全部通过
 - [x] 没有改 lib/ test/ 代码、没有改依赖
-- [ ] Draft PR 已开，未合并
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （没有就留空）
