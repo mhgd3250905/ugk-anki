@@ -35,6 +35,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   liquid_glass_renderer: 1.0.0-dev.1
+  drift: 2.35.3
+  drift_flutter: 0.3.1
+  ugk_core:
+    path: ../packages/core
+  ugk_data:
+    path: ../packages/data
 
 dev_dependencies:
   flutter_test:
