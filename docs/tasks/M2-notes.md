@@ -19,7 +19,7 @@
 ---
 
 ## 步骤 1：建文件
-- [ ] 1.1 建以下文件：
+- [x] 1.1 建以下文件：
 ```
 packages/core/lib/src/notes/fields.dart
 packages/core/lib/src/notes/tags.dart
@@ -33,9 +33,9 @@ packages/core/test/notes_tags_guid_test.dart
 packages/core/test/notes_template_test.dart
 packages/core/test/notes_card_gen_test.dart
 ```
-- [ ] 1.2 在 `lib/ugk_core.dart` 末尾加 7 行 export（按字母序）：`src/notes/card_gen.dart`、`cloze.dart`、`fields.dart`、`guid.dart`、`note_type.dart`、`tags.dart`、`template.dart`。
-- [ ] 1.3 把第 9 节的 4 个测试文件原样复制进去。
-- [ ] 1.4 提交推送（此时测试会编译失败，正常）。
+- [x] 1.2 在 `lib/ugk_core.dart` 末尾加 7 行 export（按字母序）：`src/notes/card_gen.dart`、`cloze.dart`、`fields.dart`、`guid.dart`、`note_type.dart`、`tags.dart`、`template.dart`。
+- [x] 1.3 把第 9 节的 4 个测试文件原样复制进去。
+- [x] 1.4 提交推送（此时测试会编译失败，正常）。
 
 ## 步骤 2：fields.dart
 ```dart
@@ -60,7 +60,7 @@ for (final b in utf8.encode(stripHtml(field).trim())) {   // import 'dart:conver
 }
 return hash;
 ```
-- [ ] 2.1 实现，`dart test test/notes_fields_test.dart` 全绿。提交推送。
+- [x] 2.1 实现，`dart test test/notes_fields_test.dart` 全绿。提交推送。
 
 ## 步骤 3：tags.dart 和 guid.dart
 ```dart
@@ -80,7 +80,7 @@ const String _base91 =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#\$%&()*+,-./:;<=>?@[]^_`{|}~';
 ```
   规则：value < 0 抛 `ArgumentError`；value == 0 返回 `'a'`；否则反复 `value % 91` 取字符、`value ~/= 91`，最后把取到的字符**倒序**拼起来。
-- [ ] 3.1 实现，`dart test test/notes_tags_guid_test.dart` 全绿。提交推送。
+- [x] 3.1 实现，`dart test test/notes_tags_guid_test.dart` 全绿。提交推送。
 
 ## 步骤 4：cloze.dart
 ```dart
@@ -131,7 +131,7 @@ NoteType clozeNoteType(int id);
 | clozeNoteType | `Cloze` | cloze | Text(0), Back Extra(1) | `Cloze` / 0 / `{{cloze:Text}}` / `{{cloze:Text}}<br>{{Back Extra}}` |
 
 三个的 css 都是 `kDefaultCss`，sortFieldIdx 都是 0。
-- [ ] 5.1 步骤 4、5 写完，提交推送。
+- [x] 5.1 步骤 4、5 写完，提交推送。
 
 ## 步骤 6：template.dart（模板渲染，本任务最难的一步）
 ```dart
@@ -158,7 +158,7 @@ RenderResult renderTemplate(String template, Map<String, String> fields,
    - 其他 → 当字段名，输出 `fields[名字] ?? ''`（不存在的字段输出空）；value 非空时 used = true
    - 词表走完时如果 `closing != null`（区段没闭合），抛 `FormatException('模板格式错误')`。
 3. `renderTemplate` 返回 `RenderResult(walk(null), used)`。
-- [ ] 6.1 实现，`dart test test/notes_template_test.dart` 全绿。提交推送。
+- [x] 6.1 实现，`dart test test/notes_template_test.dart` 全绿。提交推送。
 
 ## 步骤 7：card_gen.dart
 ```dart
@@ -176,11 +176,11 @@ String sortFieldValue(NoteType type, List<String> fields);
   - standard：找 `t.ord == ord` 的模板，找不到抛 `ArgumentError`；q = `renderTemplate(qfmt, map)`；a = `renderTemplate(afmt, map, frontSide: q.text, answer: true)`。
   - 返回 `RenderedCard(q.text, a.text)`。
 - `sortFieldValue` = `stripHtml(fields[type.sortFieldIdx]).trim()`。
-- [ ] 7.1 实现，`dart test test/notes_card_gen_test.dart` 全绿。提交推送。
+- [x] 7.1 实现，`dart test test/notes_card_gen_test.dart` 全绿。提交推送。
 
 ## 步骤 8：总检查
-- [ ] 8.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
-- [ ] 8.2 提交推送，开 Draft PR `M2 笔记与模板` 到 main，正文贴验收清单。
+- [x] 8.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
+- [x] 8.2 提交推送，开 Draft PR `M2 笔记与模板` 到 main，正文贴验收清单。
 
 ## 9. 测试文件全文（原样复制，不许改）
 
@@ -517,11 +517,11 @@ void main() {
 ---
 
 ## 验收清单（汇报时原样贴，逐项勾选）
-- [ ] `pubspec.yaml` 没变，仍然没有任何 dependencies
-- [ ] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/notes/`、4 个 `test/notes_*`、`lib/ugk_core.dart`、本任务文件）
-- [ ] 4 个测试文件和本文件第 9 节一字不差
-- [ ] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
-- [ ] Draft PR 已开，未合并
+- [x] `pubspec.yaml` 没变，仍然没有任何 dependencies
+- [x] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/notes/`、4 个 `test/notes_*`、`lib/ugk_core.dart`、本任务文件）
+- [x] 4 个测试文件和本文件第 9 节一字不差
+- [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）
