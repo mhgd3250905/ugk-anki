@@ -90,7 +90,7 @@ M0 的玻璃组件（`lib/ui/glass/glass_card.dart` 等）和 `review_preview_sc
 - [x] 整个 App 看不到系统白色弹窗、底部黑色提示条、下拉菜单、紫色控件、转圈
 - [x] 8 张截图已入库，走查记录已填
 - [x] 没有改 lib/ test/ 逻辑、没有改依赖
-- [ ] Draft PR 已开，未合并
+- [x] Draft PR 已开，未合并（#6）
 
 ## 走查记录
 - 3.1 正常：新建卡组为玻璃卡片弹窗（圆角输入框 + 「取消 / 创建」胶囊，创建为蓝色），无系统白色弹窗、无下划线；创建 `English::Dance` 后列表出现 `Default` 和缩进的 `Dance`；重复创建同名，顶部橙色圆点玻璃提示条「卡组「English::Dance」已存在」约 2 秒自动消失，不是底部黑色 SnackBar。
