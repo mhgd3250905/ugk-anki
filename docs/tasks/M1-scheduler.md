@@ -580,7 +580,7 @@ Map<Rating, String> previewLabels(Card card, DeckPreset p, {required int today})
 
 - [x] 10.1 写完，全绿。
 - [x] 10.2 在 `packages/core` 执行 `dart analyze` 和 `dart test`，**全部通过、0 warning**。把 `dart test` 最后一行输出（如 `+87: All tests passed!`）贴进汇报。
-- [ ] 10.3 提交推送，开 Draft PR `M1 调度器` 到 main。
+- [x] 10.3 提交推送，开 Draft PR `M1 调度器` 到 main。
 
 ---
 
@@ -590,7 +590,7 @@ Map<Rating, String> previewLabels(Card card, DeckPreset p, {required int today})
 - [x] ease 全程是 int 千分比
 - [x] 步骤 3/4/6/8/9/10 的所有表格都写成了测试，期望值一个没改
 - [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
-- [ ] Draft PR 已开，未合并
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）
