@@ -102,17 +102,17 @@ const fakeLabels = ['<1m', '<6m', '<10m', '4d'];   // Again / Hard / Good / Easy
 
 - [x] 5.1 `GlassIconButton`：参数 `IconData icon`、`VoidCallback onTap`。`LiquidGlass(shape: LiquidOval(), child: SizedBox.square(dimension: 44, child: Icon(...)))`，外面包 `GestureDetector`，按下用 `GlassGlow`。
 - [x] 5.2 `GlassTopBar`：参数 `title`、`newCount`、`learnCount`、`reviewCount`、`onBack`。布局：左边 `GlassIconButton(Icons.arrow_back_ios_new)`；中间一个胶囊玻璃（`LiquidRoundedSuperellipse(borderRadius: UgkRadius.bar)`，高 44），里面一行：卡组名（取 `::` 后最后一段，即 `Dance`）+ 三个数字（颜色 newBlue / learnRed / reviewGreen，字重 600）；右边 `GlassIconButton(Icons.more_horiz)`。三个玻璃放进一个 `LiquidGlassBlendGroup(blend: 20)`，用 `LiquidGlass.grouped`。
-- [ ] 5.3 `GlassCard`：参数 `front`、`back`、`tag`、`bool showBack`、`VoidCallback onTap`。一个大玻璃 `LiquidRoundedSuperellipse(borderRadius: UgkRadius.card)`，宽 = 屏宽 − 2×UgkSpace.l，高 = 屏高 × 0.5。内容：
+- [x] 5.3 `GlassCard`：参数 `front`、`back`、`tag`、`bool showBack`、`VoidCallback onTap`。一个大玻璃 `LiquidRoundedSuperellipse(borderRadius: UgkRadius.card)`，宽 = 屏宽 − 2×UgkSpace.l，高 = 屏高 × 0.5。内容：
   - 正面：`front` 居中，字号 cardFront，字重 600。
   - 背面：上方 `front`（字号 22，透明度 0.6），中间一条 1px 分隔线（透明度 0.2），下方 `back`（字号 cardBack），最下方 `tag` 小胶囊（字号 12）。
   - 正反切换用 `AnimatedSwitcher`（250ms，淡入淡出 + 轻微缩放 0.98→1.0），**只切换 child 文字，不要给玻璃本身加 Opacity**。
-- [ ] 5.4 `GlassRatingBar`：参数 `List<String> labels`（4 个）、`ValueChanged<int> onRate`、`bool visible`。
+- [x] 5.4 `GlassRatingBar`：参数 `List<String> labels`（4 个）、`ValueChanged<int> onRate`、`bool visible`。
   - 一行 4 个胶囊玻璃按钮（`LiquidRoundedSuperellipse(borderRadius: UgkRadius.button)`，高 64，等宽，间距 8），放进 `LiquidGlassBlendGroup(blend: 24)`，用 `LiquidGlass.grouped`。
   - 每个按钮用 `appearance` 着色：Again/Hard/Good/Easy 分别 tint `UgkColors.again/hard/good/easy`，tint 透明度 0.35（`color.withValues(alpha: 0.35)`）。深浅色分别用 `ios27RegularDark` / `ios27RegularLight`。
   - 按钮内两行字：上行按钮名（Again/Hard/Good/Easy，字号 button，字重 600），下行间隔 label（字号 buttonHint，透明度 0.7）。
   - `visible == false` 时：在同一位置显示一个整宽胶囊玻璃「显示答案」（高 64）。切换用 `LiquidGlassVisibility` 做淡入淡出（300ms），**不要用 Opacity**。
   - 按下时 `LiquidStretch` 轻微挤压 + `GlassGlow`。
-- [ ] 5.5 每个组件写完都 `flutter analyze` 一次。每完成两个组件提交推送一次。
+- [x] 5.5 每个组件写完都 `flutter analyze` 一次。每完成两个组件提交推送一次。
 
 ## 步骤 6：页面（review_preview_screen.dart）
 - [ ] 6.1 `ReviewPreviewScreen` 是 StatefulWidget，状态只有 `bool showBack = false`。
