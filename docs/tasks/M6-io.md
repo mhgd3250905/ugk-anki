@@ -78,7 +78,7 @@ docs/samples/m6-sample.csv                走查用样例（4 行，含引号、
 - [ ] Draft PR 已开，未合并
 
 ## 走查记录
-- 2.1 正常：`flutter run --release` 覆盖安装（未卸载），首页保留 M5 的 `Default` 与 `Dance`。
+- 2.1 正常：`flutter build apk --release` 后用 `adb install -r` 覆盖安装（未卸载），首页保留 M5 的 `Default` 与 `Dance`。
 - 2.2 正常：`m6-sample.csv` 已推送到 `/sdcard/Download/`（246 B）。
 - 3.1 正常：「⋯」→ 底部升起玻璃面板「数据」，4 项，最后一项「从备份恢复」为红色；无系统弹窗。截图 `m6-menu.png`。
 - 3.2 正常：系统保存界面默认 Download；保存后顶部绿色提示「备份已保存」；文件 `ugk-anki-backup-20261025-0051.json`（4.46 KB）。
@@ -109,4 +109,4 @@ docs/samples/m6-sample.csv                走查用样例（4 行，含引号、
 - 3.3 标签默认值：导入页「标签」默认「不导入」，任务文件预期「第 3 列 · 街舞 battle」。`parseCsv` 只从 `#tags column:` 文件头取标签列，普通 `tags` 表头不参与映射；`ImportScreen` 用 `table.tagsColumn` 初始化，因此默认不导入。按 3.4 手动选「第 3 列」后功能正常（导入与导出的标签均正确）。未改 `lib/`；建议后续更新任务文案或评估普通 `tags` 表头的自动映射。
 - 3.5 / 3.8 数量：实际导入 3 条笔记 / 3 张卡片、跳过重复 1，导出 6 条；任务预期 4 / 4 与 7。`m6-sample.csv` 的 `I'm down` 与 M5 已有 `Basic` 笔记「I'm down」同类型且首字段相同，设置「跳过」时按类型范围判重（`packages/data/lib/src/import_export.dart`），该行被跳过。导入、去重、导出行为符合实现；差异来自任务预期未计入这条重复。未改代码与测试。
 - 走查过程：系统文件选择器滑动未停稳时曾误触打开一个 MP4 的导入页（6388 行 / 9 列）及 SmartFit 应用；两次都没有执行导入，数据未变。之后改用 `uiautomator dump` 精确坐标并等待列表停稳。为截到首次导入提示原文，曾用 3.2 的备份恢复后按相同设置重导，再继续 3.6～3.13；最终数据已回到 M5 状态（重启后再导出验证为 3 条）。
-- 构建：本机 Gradle 默认 8G 堆触发 OOM，临时把 `app/android/gradle.properties` 改为 3G 完成 release 构建；已恢复原值，不提交。
+- 构建：本机 Gradle 默认 8G 堆在先前构建中触发 native OOM；M6 release 构建临时把 `app/android/gradle.properties` 改为 3G，构建与覆盖安装成功后已恢复原值，不提交。
