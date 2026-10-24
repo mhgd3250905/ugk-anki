@@ -222,8 +222,8 @@ double fuzzFactorFor(int cardId, int reps) => Random(cardId + reps).nextDouble()
 ```
 （`Random` 来自 `dart:math`，这里带种子，允许使用。）
 
-- [ ] 4.1 写完上面代码。
-- [ ] 4.2 `test/fuzz_test.dart`，min=1，max=36500，全部必须通过：
+- [x] 4.1 写完上面代码。
+- [x] 4.2 `test/fuzz_test.dart`，min=1，max=36500，全部必须通过：
 
 | interval | fuzzDelta（误差 1e-9） | constrainedFuzzBounds | fuzz=0.0 | fuzz=0.5 | fuzz=0.99 |
 |---|---|---|---|---|---|
@@ -237,7 +237,7 @@ double fuzzFactorFor(int cardId, int reps) => Random(cardId + reps).nextDouble()
 | 100 | 6.975 | (93, 107) | 93 | 100 | 107 |
 
 另加：`withReviewFuzz(null, 2.5, 1, 36500) == 3`；`withReviewFuzz(null, 62.5, 1, 30) == 30`；`fuzzFactorFor(123, 4)` 连续调用两次结果相同。
-- [ ] 4.3 测试全绿。提交推送。
+- [x] 4.3 测试全绿。提交推送。
 
 ---
 
