@@ -60,7 +60,7 @@ for (final b in utf8.encode(stripHtml(field).trim())) {   // import 'dart:conver
 }
 return hash;
 ```
-- [ ] 2.1 实现，`dart test test/notes_fields_test.dart` 全绿。提交推送。
+- [x] 2.1 实现，`dart test test/notes_fields_test.dart` 全绿。提交推送。
 
 ## 步骤 3：tags.dart 和 guid.dart
 ```dart
