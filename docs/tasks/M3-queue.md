@@ -19,15 +19,15 @@
 ---
 
 ## 步骤 1：建文件
-- [ ] 1.1 建以下文件：
+- [x] 1.1 建以下文件：
 ```
 packages/core/lib/src/queue/day.dart
 packages/core/lib/src/queue/study_queue.dart
 packages/core/test/queue_day_test.dart
 packages/core/test/queue_build_test.dart
 ```
-- [ ] 1.2 在 `lib/ugk_core.dart` 末尾加 2 行 export：`src/queue/day.dart`、`src/queue/study_queue.dart`。
-- [ ] 1.3 把第 6 节的 2 个测试文件原样复制进去。提交推送。
+- [x] 1.2 在 `lib/ugk_core.dart` 末尾加 2 行 export：`src/queue/day.dart`、`src/queue/study_queue.dart`。
+- [x] 1.3 把第 6 节的 2 个测试文件原样复制进去。提交推送。
 
 ## 步骤 2：day.dart
 ```dart
@@ -40,7 +40,7 @@ int dayCutoffMs({required int today, required int collectionCreatedMs,
 - `dayNumber = absDay(nowMs) - absDay(collectionCreatedMs)`。创建当天 = 0。
 - `dayCutoffMs`（第 today 天结束、下一天开始的时刻）= `(absDay(collectionCreatedMs) + today + 1) * 86400000 - shift`。
 - 上海 utcOffsetMinutes = 480；调用方以后从手机时区取，本任务不管。
-- [ ] 2.1 实现，`dart test test/queue_day_test.dart` 全绿。提交推送。
+- [x] 2.1 实现，`dart test test/queue_day_test.dart` 全绿。提交推送。
 
 ## 步骤 3：study_queue.dart 之一：工具函数
 ```dart
@@ -88,11 +88,11 @@ StudyQueue buildQueue({required List<Card> cards, required int today,
 5. `reviewLimit = max(0, preset.reviewsPerDay - reviewsDoneToday)`；`reviewPart` = `[...dayLearn, ...reviews]` 的前 reviewLimit 张。
 6. `newLimit = min(preset.newPerDay - newDoneToday, reviewLimit - reviewPart.length)`，小于 0 取 0；`newCards` = active 中 `queue == CardQueue.newCard` 按 (due, id) 升序的前 newLimit 张。
 7. 返回 `StudyQueue(learning: learning, main: intersperse(reviewPart, newCards))`。
-- [ ] 5.1 步骤 3～5 写完，`dart test test/queue_build_test.dart` 全绿。提交推送。
+- [x] 5.1 步骤 3～5 写完，`dart test test/queue_build_test.dart` 全绿。提交推送。
 
 ## 步骤 5.9：总检查
-- [ ] 5.9.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
-- [ ] 5.9.2 提交推送，开 Draft PR `M3 今日队列` 到 main，正文贴验收清单。
+- [x] 5.9.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
+- [x] 5.9.2 提交推送，开 Draft PR `M3 今日队列` 到 main，正文贴验收清单。
 
 ## 6. 测试文件全文（原样复制，不许改）
 
@@ -435,12 +435,12 @@ void main() {
 ---
 
 ## 验收清单（汇报时原样贴，逐项勾选）
-- [ ] `pubspec.yaml` 没变，仍然没有任何 dependencies
-- [ ] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/queue/`、2 个 `test/queue_*`、`lib/ugk_core.dart`、本任务文件）
-- [ ] 2 个测试文件和本文件第 6 节一字不差
-- [ ] 排序都用完整比较键，没有依赖稳定排序
-- [ ] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
-- [ ] Draft PR 已开，未合并
+- [x] `pubspec.yaml` 没变，仍然没有任何 dependencies
+- [x] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/queue/`、2 个 `test/queue_*`、`lib/ugk_core.dart`、本任务文件）
+- [x] 2 个测试文件和本文件第 6 节一字不差
+- [x] 排序都用完整比较键，没有依赖稳定排序
+- [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）

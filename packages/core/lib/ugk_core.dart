@@ -14,3 +14,5 @@ export 'src/notes/guid.dart';
 export 'src/notes/note_type.dart';
 export 'src/notes/tags.dart';
 export 'src/notes/template.dart';
+export 'src/queue/day.dart';
+export 'src/queue/study_queue.dart';
