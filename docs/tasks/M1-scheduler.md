@@ -288,8 +288,8 @@ class SchedulingStates {
     Rating.again => again, Rating.hard => hard, Rating.good => good, Rating.easy => easy };
 }
 ```
-- [ ] 5.1 写完。四个状态类都要实现 `==`、`hashCode`、`toString`（测试要比较对象）。
-- [ ] 5.2 `dart analyze` 无报错。提交推送。
+- [x] 5.1 写完。四个状态类都要实现 `==`、`hashCode`、`toString`（测试要比较对象）。
+- [x] 5.2 `dart analyze` 无报错。提交推送。
 
 ---
 
