@@ -180,7 +180,7 @@ String sortFieldValue(NoteType type, List<String> fields);
 
 ## 步骤 8：总检查
 - [x] 8.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
-- [ ] 8.2 提交推送，开 Draft PR `M2 笔记与模板` 到 main，正文贴验收清单。
+- [x] 8.2 提交推送，开 Draft PR `M2 笔记与模板` 到 main，正文贴验收清单。
 
 ## 9. 测试文件全文（原样复制，不许改）
 
@@ -521,7 +521,7 @@ void main() {
 - [x] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/notes/`、4 个 `test/notes_*`、`lib/ugk_core.dart`、本任务文件）
 - [x] 4 个测试文件和本文件第 9 节一字不差
 - [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
-- [ ] Draft PR 已开，未合并
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）
