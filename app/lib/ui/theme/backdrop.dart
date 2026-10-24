@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// 液态玻璃背后的彩色渐变背景
+/// 液态玻璃背后的背景：柔和三色渐变 + 两团大光斑
 class UgkBackdrop extends StatelessWidget {
   const UgkBackdrop({super.key});
 
@@ -12,28 +12,27 @@ class UgkBackdrop extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final colors = dark ? UgkColors.darkBackdrop : UgkColors.lightBackdrop;
+    final glowA = dark ? UgkColors.darkGlowA : UgkColors.lightGlowA;
+    final glowB = dark ? UgkColors.darkGlowB : UgkColors.lightGlowB;
+    final alpha = dark ? 0.45 : 0.55;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
           colors: colors,
         ),
       ),
       child: Stack(
         clipBehavior: Clip.none,
-        children: const [
+        children: [
           Align(
-            alignment: Alignment(-1.3, -1.1),
-            child: _BlurCircle(color: UgkColors.newBlue),
+            alignment: const Alignment(1.1, -0.55),
+            child: _Glow(color: glowA.withValues(alpha: alpha), size: 360),
           ),
           Align(
-            alignment: Alignment(1.4, 0.0),
-            child: _BlurCircle(color: UgkColors.learnRed),
-          ),
-          Align(
-            alignment: Alignment(-1.2, 1.3),
-            child: _BlurCircle(color: UgkColors.reviewGreen),
+            alignment: const Alignment(-1.1, 0.75),
+            child: _Glow(color: glowB.withValues(alpha: alpha), size: 340),
           ),
         ],
       ),
@@ -41,22 +40,20 @@ class UgkBackdrop extends StatelessWidget {
   }
 }
 
-class _BlurCircle extends StatelessWidget {
-  const _BlurCircle({required this.color});
+class _Glow extends StatelessWidget {
+  const _Glow({required this.color, required this.size});
 
   final Color color;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+      imageFilter: ImageFilter.blur(sigmaX: 90, sigmaY: 90),
       child: Container(
-        width: 260,
-        height: 260,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color.withValues(alpha: 0.35),
-        ),
+        width: size,
+        height: size,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }

@@ -167,3 +167,34 @@ Scaffold(backgroundColor: Colors.transparent, body:
 1. **5.4 / 6.3**：`GlassRatingBar` 的任务参数里没有「显示答案」的回调，无法实现 6.3 的「点显示答案翻面」。已增加 `required VoidCallback onShowAnswer`，页面传入 `setState(() => showBack = true)`；其余三个参数不变。
 2. **7.3**：全玻璃（Flutter GPU）在真机 2602BRT18C（Android 16）上，`LiquidGlassLayer` 的背景采样左侧有一条约 30px 未覆盖的竖条，评分条周围有矩形色带；`MediaQuery` 的 left/right inset 都是 0，`fake: true`（FakeGlass）时没有该现象，试过 `useBackdropGroup: true`、`RepaintBoundary`、把 layer 移到 `SafeArea` 外都无效。判断是 `liquid_glass_renderer 1.0.0-dev.1` 在该真机上的渲染问题；按任务保留全玻璃，截图如实反映该现象。
 3. **构建环境**：本机空闲内存不足，Gradle 默认 `-Xmx8G` 曾导致 JVM native OOM（`hs_err_pid*.log`）。仅在本地临时把 `android/gradle.properties` 的 `org.gradle.jvmargs` 降到 `-Xmx3G` 完成构建，提交前已恢复为模板默认值，未进入提交。
+
+---
+
+# M0.1 视觉返工（开哥：界面丑、分块难看）
+
+主控已在本分支直接改好代码（提交「M0.1: 重做视觉」），你只负责**真机验证 + 重新截图**，不要改 `app/lib/` 下任何代码。
+
+改了什么（供你核对，不需要动）：
+- 背景：去掉三色光斑，改成暖白/墨蓝渐变 + 两团大光斑。
+- 玻璃默认走 FakeGlass：`tokens.dart` 里 `UgkGlass.useFake = true`（真机全玻璃的矩形色带是库的问题，先绕开）。
+- `LiquidGlassLayer` 改为铺满整屏，`SafeArea` 放在 layer 里面。
+- 顶栏三块独立玻璃，不再融合；计数改成「小圆点 + 数字」。
+- 卡片撑满中间区域，左上角标签，正面底部有「轻点卡片显示答案」提示；背面问题缩小置顶、答案居中。
+- 评分按钮四个独立中性玻璃，不再染色、不再融合；上行彩色间隔、下行中文名（重来/困难/良好/简单）。
+
+## 步骤 8：拉取并检查
+- [ ] 8.1 `git fetch && git checkout feat/m0-visual && git pull`
+- [ ] 8.2 `cd app && flutter pub get && flutter analyze`，必须 `No issues found!`。有报错就停，把原文写进「问题记录」，推送后汇报。
+
+## 步骤 9：真机截图（覆盖旧图）
+- [ ] 9.1 `flutter run --release --enable-flutter-gpu`，同一台 2602BRT18C。
+- [ ] 9.2 重新截 4 张，**覆盖** `docs/screenshots/m0/` 下同名文件：`light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`。
+- [ ] 9.3 对照组：把 `tokens.dart` 的 `useFake` **临时**改成 `false`，release 运行，只截一张浅色背面存为 `docs/screenshots/m0/light-back-real.png`；截完把 `useFake` 改回 `true`，确认 `git diff app/` 为空。
+- [ ] 9.4 重新录 `flip.mp4`（10 秒内：显示答案 → 点良好 → 回正面），覆盖旧文件。
+- [ ] 9.5 提交推送：`M0.1: 真机截图`。在 PR #4 下评论贴 5 张新图。
+
+## M0.1 验收清单（汇报时原样贴）
+- [ ] `app/lib/` 没有任何改动（除了 9.3 临时改动已还原）
+- [ ] `flutter analyze` 无问题
+- [ ] 4 张截图 + light-back-real.png + flip.mp4 已提交
+- [ ] PR #4 仍为 Draft，未合并

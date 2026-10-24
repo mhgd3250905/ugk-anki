@@ -3,7 +3,7 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 import '../theme/tokens.dart';
 
-/// 可翻面的玻璃卡片
+/// 可翻面的玻璃卡片：撑满父级给的空间（由页面决定尺寸和留白）
 class GlassCard extends StatelessWidget {
   const GlassCard({
     required this.front,
@@ -22,40 +22,78 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screen = MediaQuery.sizeOf(context);
     return GestureDetector(
       onTap: onTap,
-      child: SizedBox(
-        width: screen.width - UgkSpace.l * 2,
-        height: screen.height * 0.5,
-        child: LiquidGlass(
-          shape: const LiquidRoundedSuperellipse(borderRadius: UgkRadius.card),
+      behavior: HitTestBehavior.opaque,
+      child: LiquidGlass(
+        shape: const LiquidRoundedSuperellipse(borderRadius: UgkRadius.card),
+        child: SizedBox.expand(
           child: Padding(
-            padding: const EdgeInsets.all(UgkSpace.l),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              layoutBuilder: (currentChild, previousChildren) => Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.center,
-                children: [...previousChildren, ?currentChild],
-              ),
-              transitionBuilder: (child, animation) => FadeTransition(
-                opacity: animation,
-                child: ScaleTransition(
-                  scale: Tween<double>(begin: 0.98, end: 1).animate(animation),
-                  child: child,
+            padding: const EdgeInsets.fromLTRB(
+              UgkSpace.l,
+              UgkSpace.l - 4,
+              UgkSpace.l,
+              UgkSpace.l,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(alignment: Alignment.centerLeft, child: _Tag(tag)),
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    switchInCurve: Curves.easeOutCubic,
+                    switchOutCurve: Curves.easeInCubic,
+                    layoutBuilder: (current, previous) => Stack(
+                      fit: StackFit.expand,
+                      children: [...previous, ?current],
+                    ),
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(
+                        scale: Tween<double>(begin: 0.98, end: 1)
+                            .animate(animation),
+                        child: child,
+                      ),
+                    ),
+                    child: showBack
+                        ? _BackFace(
+                            front: front,
+                            back: back,
+                            key: const ValueKey('back'),
+                          )
+                        : _FrontFace(front: front, key: const ValueKey('front')),
+                  ),
                 ),
-              ),
-              child: showBack
-                  ? _BackFace(
-                      front: front,
-                      back: back,
-                      tag: tag,
-                      key: const ValueKey('back'),
-                    )
-                  : _FrontFace(front: front, key: const ValueKey('front')),
+              ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Tag extends StatelessWidget {
+  const _Tag(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(UgkRadius.pill),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color.withValues(alpha: 0.6),
+          fontSize: UgkText.tag,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -69,31 +107,41 @@ class _FrontFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        front,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
-          fontSize: UgkText.cardFront,
-          fontWeight: FontWeight.w600,
+    final color = Theme.of(context).colorScheme.onSurface;
+    return Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: Text(
+              front,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: color,
+                fontSize: UgkText.cardFront,
+                fontWeight: FontWeight.w600,
+                height: 1.3,
+                letterSpacing: -0.3,
+              ),
+            ),
+          ),
         ),
-      ),
+        Text(
+          '轻点卡片显示答案',
+          style: TextStyle(
+            color: color.withValues(alpha: 0.35),
+            fontSize: UgkText.hint,
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _BackFace extends StatelessWidget {
-  const _BackFace({
-    required this.front,
-    required this.back,
-    required this.tag,
-    super.key,
-  });
+  const _BackFace({required this.front, required this.back, super.key});
 
   final String front;
   final String back;
-  final String tag;
 
   @override
   Widget build(BuildContext context) {
@@ -101,18 +149,28 @@ class _BackFace extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const SizedBox(height: UgkSpace.m),
         Text(
           front,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: color.withValues(alpha: 0.6),
-            fontSize: 22,
+            color: color.withValues(alpha: 0.5),
+            fontSize: UgkText.cardBackQuestion,
             fontWeight: FontWeight.w500,
+            height: 1.35,
           ),
         ),
         const SizedBox(height: UgkSpace.m),
-        Container(height: 1, color: color.withValues(alpha: 0.2)),
-        const SizedBox(height: UgkSpace.m),
+        Center(
+          child: Container(
+            width: 40,
+            height: 2,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+        ),
         Expanded(
           child: Center(
             child: Text(
@@ -121,23 +179,10 @@ class _BackFace extends StatelessWidget {
               style: TextStyle(
                 color: color,
                 fontSize: UgkText.cardBack,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
+                height: 1.4,
               ),
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: UgkSpace.m,
-              vertical: UgkSpace.xs,
-            ),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(UgkRadius.button),
-            ),
-            child: Text(tag, style: TextStyle(color: color, fontSize: 12)),
           ),
         ),
       ],

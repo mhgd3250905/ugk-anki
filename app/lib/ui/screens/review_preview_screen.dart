@@ -27,55 +27,51 @@ class _ReviewPreviewScreenState extends State<ReviewPreviewScreen> {
       body: Stack(
         children: [
           const Positioned.fill(child: UgkBackdrop()),
-          SafeArea(
+          // layer 铺满整屏，SafeArea 放在 layer 里面，避免采样区域出现矩形边界
+          Positioned.fill(
             child: LiquidGlassLayer(
-              settings: LiquidGlassSettings.ios27Regular(
-                brightness: brightness,
-              ),
+              fake: UgkGlass.useFake,
+              settings: LiquidGlassSettings.ios27Regular(brightness: brightness),
               defaultAppearance: LiquidGlassAppearance.ios27Regular(
                 brightness: brightness,
               ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: UgkSpace.s,
-                      left: UgkSpace.m,
-                      right: UgkSpace.m,
-                    ),
-                    child: GlassTopBar(
-                      title: fakeDeckName,
-                      newCount: fakeCounts.newCount,
-                      learnCount: fakeCounts.learnCount,
-                      reviewCount: fakeCounts.reviewCount,
-                      onBack: () => Navigator.of(context).maybePop(),
-                    ),
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    UgkSpace.m,
+                    UgkSpace.s,
+                    UgkSpace.m,
+                    UgkSpace.m,
                   ),
-                  Expanded(
-                    child: Center(
-                      child: GlassCard(
-                        front: fakeFront,
-                        back: fakeBack,
-                        tag: fakeTag,
-                        showBack: showBack,
-                        onTap: () => setState(() => showBack = true),
+                  child: Column(
+                    children: [
+                      GlassTopBar(
+                        title: fakeDeckName,
+                        newCount: fakeCounts.newCount,
+                        learnCount: fakeCounts.learnCount,
+                        reviewCount: fakeCounts.reviewCount,
+                        onBack: () => Navigator.of(context).maybePop(),
                       ),
-                    ),
+                      const SizedBox(height: UgkSpace.l),
+                      Expanded(
+                        child: GlassCard(
+                          front: fakeFront,
+                          back: fakeBack,
+                          tag: fakeTag,
+                          showBack: showBack,
+                          onTap: () => setState(() => showBack = true),
+                        ),
+                      ),
+                      const SizedBox(height: UgkSpace.l),
+                      GlassRatingBar(
+                        labels: fakeLabels,
+                        visible: showBack,
+                        onRate: (_) => setState(() => showBack = false),
+                        onShowAnswer: () => setState(() => showBack = true),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: UgkSpace.m,
-                      right: UgkSpace.m,
-                      bottom: UgkSpace.l,
-                    ),
-                    child: GlassRatingBar(
-                      labels: fakeLabels,
-                      visible: showBack,
-                      onRate: (_) => setState(() => showBack = false),
-                      onShowAnswer: () => setState(() => showBack = true),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
