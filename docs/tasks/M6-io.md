@@ -32,13 +32,13 @@ docs/samples/m6-sample.csv                走查用样例（4 行，含引号、
 - Gradle 内存不够时可以临时改 `gradle.properties`，但**不要提交**。
 
 ## 步骤 1：编译检查
-- [ ] 1.1 `git fetch && git checkout feat/m6-io && git pull`
-- [ ] 1.2 `cd packages/data && dart pub get && dart test` → `+32: All tests passed!`
-- [ ] 1.3 `cd ../../app && flutter pub get`
-- [ ] 1.4 仓库根目录 `dart format app/lib app/test packages/data/lib packages/data/test`；有变化单独提交 `M6: dart format`
-- [ ] 1.5 `cd app && flutter analyze` → `No issues found!`
-- [ ] 1.6 `flutter test` → `+7: All tests passed!`
-- [ ] 1.7 提交推送（`M6: 本机编译与测试通过`）
+- [x] 1.1 `git fetch && git checkout feat/m6-io && git pull`
+- [x] 1.2 `cd packages/data && dart pub get && dart test` → `+32: All tests passed!`
+- [x] 1.3 `cd ../../app && flutter pub get`
+- [x] 1.4 仓库根目录 `dart format app/lib app/test packages/data/lib packages/data/test`；有变化单独提交 `M6: dart format`
+- [x] 1.5 `cd app && flutter analyze` → `No issues found!`
+- [x] 1.6 `flutter test` → `+7: All tests passed!`
+- [x] 1.7 提交推送（`M6: 本机编译与测试通过`）
 
 ## 步骤 2：真机准备
 - [ ] 2.1 **覆盖安装**（不要卸载，保留 M5 走查留下的数据）：`flutter run --release`。首页能看到 M5 的 `Default` 和 `Dance`。
