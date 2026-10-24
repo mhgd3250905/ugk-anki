@@ -29,35 +29,35 @@ packages/data/test/repository_test.dart  19 个测试
 ---
 
 ## 步骤 1：拉代码
-- [ ] 1.1 `git fetch && git checkout feat/m4-data && git pull`
-- [ ] 1.2 `cd packages/data && dart pub get`，成功。
+- [x] 1.1 `git fetch && git checkout feat/m4-data && git pull`
+- [x] 1.2 `cd packages/data && dart pub get`，成功。
 
 ## 步骤 2：生成代码一致性
-- [ ] 2.1 `dart run build_runner build --delete-conflicting-outputs`
-- [ ] 2.2 `git status`：`lib/src/database.g.dart` **应当没有变化**。如果有变化，提交它（`M4: 重新生成 database.g.dart`），并在问题记录里写一句「g.dart 有差异，已提交」，继续往下。
+- [x] 2.1 `dart run build_runner build --delete-conflicting-outputs`
+- [x] 2.2 `git status`：`lib/src/database.g.dart` **应当没有变化**。如果有变化，提交它（`M4: 重新生成 database.g.dart`），并在问题记录里写一句「g.dart 有差异，已提交」，继续往下。
 
 ## 步骤 3：静态检查和格式
-- [ ] 3.1 `dart analyze` → `No issues found!`
-- [ ] 3.2 `dart format --set-exit-if-changed lib test` → 退出码 0
+- [x] 3.1 `dart analyze` → `No issues found!`
+- [x] 3.2 `dart format --set-exit-if-changed lib test` → 退出码 0
 
 ## 步骤 4：测试
-- [ ] 4.1 `dart test` → `+19: All tests passed!`
+- [x] 4.1 `dart test` → `+19: All tests passed!`
   - sqlite3 3.x 首次运行会执行 build hook 准备 sqlite 动态库，需要联网，等它跑完。
   - 如果报找不到 sqlite3 库：把报错原文写进问题记录，**不要**自己换包或改代码，停下汇报。
-- [ ] 4.2 回到仓库根目录，`cd packages/core && dart test`，仍然全绿（确认没被影响）。
+- [x] 4.2 回到仓库根目录，`cd packages/core && dart test`，仍然全绿（确认没被影响）。
 
 ## 步骤 5：收尾
-- [ ] 5.1 勾选本文件，提交推送：`M4: 本机验证通过`。
-- [ ] 5.2 开 **Draft PR**：`feat/m4-data` → `main`，标题 `M4 数据库与仓库层`，正文贴验收清单。
+- [x] 5.1 勾选本文件，提交推送：`M4: 本机验证通过`。
+- [x] 5.2 开 **Draft PR**：`feat/m4-data` → `main`，标题 `M4 数据库与仓库层`，正文贴验收清单。
 
 ## 验收清单（汇报时原样贴）
-- [ ] build_runner 重新生成后 `database.g.dart` 无差异（或已提交差异并注明）
-- [ ] `dart analyze` 无问题
-- [ ] `dart format --set-exit-if-changed` 通过
-- [ ] `packages/data`：`+19: All tests passed!`
-- [ ] `packages/core`：全部通过
-- [ ] 没有改 lib/ test/ 代码、没有改依赖
-- [ ] Draft PR 已开，未合并
+- [x] build_runner 重新生成后 `database.g.dart` 无差异（或已提交差异并注明）
+- [x] `dart analyze` 无问题
+- [x] `dart format --set-exit-if-changed` 通过
+- [x] `packages/data`：`+19: All tests passed!`
+- [x] `packages/core`：全部通过
+- [x] 没有改 lib/ test/ 代码、没有改依赖
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （没有就留空）
