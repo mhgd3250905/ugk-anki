@@ -80,7 +80,7 @@ const String _base91 =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#\$%&()*+,-./:;<=>?@[]^_`{|}~';
 ```
   规则：value < 0 抛 `ArgumentError`；value == 0 返回 `'a'`；否则反复 `value % 91` 取字符、`value ~/= 91`，最后把取到的字符**倒序**拼起来。
-- [ ] 3.1 实现，`dart test test/notes_tags_guid_test.dart` 全绿。提交推送。
+- [x] 3.1 实现，`dart test test/notes_tags_guid_test.dart` 全绿。提交推送。
 
 ## 步骤 4：cloze.dart
 ```dart
