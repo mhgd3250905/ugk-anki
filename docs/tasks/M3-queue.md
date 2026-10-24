@@ -91,7 +91,7 @@ StudyQueue buildQueue({required List<Card> cards, required int today,
 - [x] 5.1 步骤 3～5 写完，`dart test test/queue_build_test.dart` 全绿。提交推送。
 
 ## 步骤 5.9：总检查
-- [ ] 5.9.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
+- [x] 5.9.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
 - [ ] 5.9.2 提交推送，开 Draft PR `M3 今日队列` 到 main，正文贴验收清单。
 
 ## 6. 测试文件全文（原样复制，不许改）
@@ -435,11 +435,11 @@ void main() {
 ---
 
 ## 验收清单（汇报时原样贴，逐项勾选）
-- [ ] `pubspec.yaml` 没变，仍然没有任何 dependencies
-- [ ] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/queue/`、2 个 `test/queue_*`、`lib/ugk_core.dart`、本任务文件）
-- [ ] 2 个测试文件和本文件第 6 节一字不差
-- [ ] 排序都用完整比较键，没有依赖稳定排序
-- [ ] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
+- [x] `pubspec.yaml` 没变，仍然没有任何 dependencies
+- [x] 没有修改 M1 的任何文件（`git diff main --stat` 里只有 `lib/src/queue/`、2 个 `test/queue_*`、`lib/ugk_core.dart`、本任务文件）
+- [x] 2 个测试文件和本文件第 6 节一字不差
+- [x] 排序都用完整比较键，没有依赖稳定排序
+- [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
 - [ ] Draft PR 已开，未合并
 
 ## 问题记录
