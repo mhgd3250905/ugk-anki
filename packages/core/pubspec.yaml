@@ -1,0 +1,8 @@
+name: ugk_core
+description: ugk-anki 核心逻辑（纯 Dart）
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: ^3.5.0
+dev_dependencies:
+  test: ^1.25.0

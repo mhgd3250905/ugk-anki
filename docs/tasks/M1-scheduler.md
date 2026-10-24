@@ -22,8 +22,8 @@ FSRS、提前复习（filtered deck）、load balancer 本期都**不做**。
 ---
 
 ## 步骤 1：建包
-- [ ] 1.1 新建目录 `packages/core`，在里面执行 `dart create -t package ugk_core --force .`（或手动建），然后删掉生成的示例代码和示例测试。
-- [ ] 1.2 `packages/core/pubspec.yaml` 改成：
+- [x] 1.1 新建目录 `packages/core`，在里面执行 `dart create -t package ugk_core --force .`（或手动建），然后删掉生成的示例代码和示例测试。
+- [x] 1.2 `packages/core/pubspec.yaml` 改成：
 ```yaml
 name: ugk_core
 description: ugk-anki 核心逻辑（纯 Dart）
@@ -34,7 +34,7 @@ environment:
 dev_dependencies:
   test: ^1.25.0
 ```
-- [ ] 1.3 建以下空文件（后面步骤填内容）：
+- [x] 1.3 建以下空文件（后面步骤填内容）：
 ```
 packages/core/lib/ugk_core.dart                 // 只写 export
 packages/core/lib/src/scheduler/preset.dart
@@ -55,8 +55,8 @@ packages/core/test/answer_test.dart
 packages/core/test/interval_format_test.dart
 packages/core/test/spec_walkthrough_test.dart
 ```
-- [ ] 1.4 `ugk_core.dart` 内容：把 `lib/src/` 下所有文件 `export` 出来。
-- [ ] 1.5 `cd packages/core && dart pub get && dart analyze` 无报错。提交推送。
+- [x] 1.4 `ugk_core.dart` 内容：把 `lib/src/` 下所有文件 `export` 出来。
+- [x] 1.5 `cd packages/core && dart pub get && dart analyze` 无报错。提交推送。
 
 ---
 
