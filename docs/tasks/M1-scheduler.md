@@ -91,8 +91,8 @@ class DeckPreset {
   DeckPreset copyWith({ ...所有字段可选... });
 }
 ```
-- [ ] 2.1 按上面写完，所有字段 `final`，构造函数 `const`，默认值必须和注释一致。
-- [ ] 2.2 写 `copyWith`。提交推送。
+- [x] 2.1 按上面写完，所有字段 `final`，构造函数 `const`，默认值必须和注释一致。
+- [x] 2.2 写 `copyWith`。提交推送。
 
 ---
 
