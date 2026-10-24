@@ -92,7 +92,7 @@ StudyQueue buildQueue({required List<Card> cards, required int today,
 
 ## 步骤 5.9：总检查
 - [x] 5.9.1 `cd packages/core && dart format lib test && dart analyze && dart test`：analyze 0 issue，全部测试通过（包括 M1 的）。贴最后一行。
-- [ ] 5.9.2 提交推送，开 Draft PR `M3 今日队列` 到 main，正文贴验收清单。
+- [x] 5.9.2 提交推送，开 Draft PR `M3 今日队列` 到 main，正文贴验收清单。
 
 ## 6. 测试文件全文（原样复制，不许改）
 
@@ -440,7 +440,7 @@ void main() {
 - [x] 2 个测试文件和本文件第 6 节一字不差
 - [x] 排序都用完整比较键，没有依赖稳定排序
 - [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
-- [ ] Draft PR 已开，未合并
+- [x] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）
