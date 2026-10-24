@@ -142,24 +142,28 @@ Scaffold(backgroundColor: Colors.transparent, body:
 - [x] 6.5 提交推送。
 
 ## 步骤 7：真机运行和截图
-- [ ] 7.1 `cd app && flutter run --release --enable-flutter-gpu`（release 模式看真实性能）。
-- [ ] 7.2 确认日志里**没有** liquid_glass 关于「多次 backdrop copy」的警告（debug 模式下会打印）。如果有，说明有组件自己建了 layer，按步骤 5 的规则改。
-- [ ] 7.3 截 4 张图（手机系统设置切换深浅色）：
+- [x] 7.1 `cd app && flutter run --release --enable-flutter-gpu`（release 模式看真实性能）。
+- [x] 7.2 确认日志里**没有** liquid_glass 关于「多次 backdrop copy」的警告（debug 模式下会打印）。如果有，说明有组件自己建了 layer，按步骤 5 的规则改。
+- [x] 7.3 截 4 张图（手机系统设置切换深浅色）：
   1. 浅色 · 正面
   2. 浅色 · 背面（评分按钮出现）
   3. 深色 · 正面
   4. 深色 · 背面
-- [ ] 7.4 截图放到 `docs/screenshots/m0/`，文件名 `light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`，提交推送。
-- [ ] 7.5 再录一段 10 秒以内的屏幕录像（翻面 → 点 Good → 回正面），放同目录 `flip.mp4`（超过 10MB 就不提交，直接发给开哥）。
+- [x] 7.4 截图放到 `docs/screenshots/m0/`，文件名 `light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`，提交推送。
+- [x] 7.5 再录一段 10 秒以内的屏幕录像（翻面 → 点 Good → 回正面），放同目录 `flip.mp4`（超过 10MB 就不提交，直接发给开哥）。
 - [ ] 7.6 开 Draft PR `M0 视觉样稿` 到 main，正文贴 4 张截图。
 
 ## 验收清单（汇报时原样贴，逐项勾选）
-- [ ] 只加了 `liquid_glass_renderer` 一个依赖
-- [ ] 页面和组件里没有写死的颜色数值（都来自 tokens.dart）
-- [ ] 整页只有一个 `LiquidGlassLayer`，release 模式运行流畅、无 backdrop copy 警告
-- [ ] 4 张截图 + 录像已提交（或已发送）
-- [ ] 没做任何其他页面
+- [x] 只加了 `liquid_glass_renderer` 一个依赖
+- [x] 页面和组件里没有写死的颜色数值（都来自 tokens.dart）
+- [x] 整页只有一个 `LiquidGlassLayer`，release 模式运行流畅、无 backdrop copy 警告
+- [x] 4 张截图 + 录像已提交（或已发送）
+- [x] 没做任何其他页面
 - [ ] Draft PR 已开，未合并
 
 ## 问题记录
 （照做跑不通时写在这里：哪一步、做了什么、报错原文）
+
+1. **5.4 / 6.3**：`GlassRatingBar` 的任务参数里没有「显示答案」的回调，无法实现 6.3 的「点显示答案翻面」。已增加 `required VoidCallback onShowAnswer`，页面传入 `setState(() => showBack = true)`；其余三个参数不变。
+2. **7.3**：全玻璃（Flutter GPU）在真机 2602BRT18C（Android 16）上，`LiquidGlassLayer` 的背景采样左侧有一条约 30px 未覆盖的竖条，评分条周围有矩形色带；`MediaQuery` 的 left/right inset 都是 0，`fake: true`（FakeGlass）时没有该现象，试过 `useBackdropGroup: true`、`RepaintBoundary`、把 layer 移到 `SafeArea` 外都无效。判断是 `liquid_glass_renderer 1.0.0-dev.1` 在该真机上的渲染问题；按任务保留全玻璃，截图如实反映该现象。
+3. **构建环境**：本机空闲内存不足，Gradle 默认 `-Xmx8G` 曾导致 JVM native OOM（`hs_err_pid*.log`）。仅在本地临时把 `android/gradle.properties` 的 `org.gradle.jvmargs` 降到 `-Xmx3G` 完成构建，提交前已恢复为模板默认值，未进入提交。
