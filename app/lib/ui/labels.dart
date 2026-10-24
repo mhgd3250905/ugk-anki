@@ -57,6 +57,11 @@ String? addNoteProblem(NoteType type, List<String> fields) {
   return null;
 }
 
-/// 卡组显示名：内置的 Default 显示成「默认」
+/// 卡组显示名：内置的 Default 显示成「默认」，层级用「›」连接，
+/// 不让用户看到内部的 :: 写法
 String deckLabel(String name) =>
-    name.split('::').map((p) => p == 'Default' ? '默认' : p).join('::');
+    name.split('::').map((p) => p == 'Default' ? '默认' : p).join(' › ');
+
+/// 用户输入的卡组名：去掉首尾空格，把 :: 换成全角冒号，
+/// 避免误建出层级（层级只通过「放在哪个卡组里」来选）
+String cleanDeckName(String input) => input.trim().replaceAll('::', '：');

@@ -61,6 +61,10 @@ void main() {
       db = UgkDatabase(NativeDatabase.memory());
       await UgkRepository(db).initIfEmpty(nowMs: nowMs());
     });
+    // 普通手机尺寸（390×844，3 倍屏），键盘约 320
+    tester.view.physicalSize = const Size(1170, 2532);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(UgkAnkiApp(repo: UgkRepository(db)));
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 200)),

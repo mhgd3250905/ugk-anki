@@ -85,19 +85,28 @@ class _DeckListScreenState extends State<DeckListScreen> {
   }
 
   Future<void> _createDeck() async {
-    final name = await showGlassPrompt(
+    final decks = _decks?.map((d) => d.deck.name).toList() ?? const [];
+    final res = await showGlassNameAndPlace(
       context,
       title: '新建卡组',
-      hint: '例如 英语::口语（:: 表示下一级）',
+      nameHint: '例如：英语',
+      placeTitle: '放在哪个卡组里',
+      noneLabel: '不放进其他卡组',
+      places: [for (final d in decks) deckLabel(d)],
       confirmLabel: '创建',
     );
-    final trimmed = name?.trim() ?? '';
-    if (trimmed.isEmpty || !mounted) return;
+    if (res == null || !mounted) return;
+    final name = cleanDeckName(res.$1);
+    if (name.isEmpty) {
+      showGlassToast(context, '卡组名称还没填', warn: true);
+      return;
+    }
+    final full = res.$2 == null ? name : '${decks[res.$2!]}::$name';
     try {
-      await RepoScope.of(context).createDeck(trimmed, nowMs: nowMs());
+      await RepoScope.of(context).createDeck(full, nowMs: nowMs());
     } on StateError {
       if (mounted) {
-        showGlassToast(context, '卡组「${deckLabel(trimmed)}」已存在', warn: true);
+        showGlassToast(context, '卡组「${deckLabel(full)}」已经有了', warn: true);
       }
     }
     _reload();
@@ -206,8 +215,9 @@ class _DeckListScreenState extends State<DeckListScreen> {
       danger: true,
     );
     if (!ok || !mounted) return;
-    await RepoScope.of(context)
-        .restoreJson(utf8.decode(file.bytes, allowMalformed: true));
+    await RepoScope.of(
+      context,
+    ).restoreJson(utf8.decode(file.bytes, allowMalformed: true));
     if (mounted) showGlassToast(context, '已从备份恢复');
   }
 
@@ -307,8 +317,9 @@ class _CountHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = Theme.of(context).colorScheme.onSurface
-        .withValues(alpha: 0.5);
+    final muted = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.5);
     Widget cell(String text, Color dot) => SizedBox(
       width: 48,
       child: Row(
@@ -353,8 +364,9 @@ class _Num extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = Theme.of(context).colorScheme.onSurface
-        .withValues(alpha: 0.25);
+    final muted = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.25);
     return SizedBox(
       width: 48,
       child: Text(

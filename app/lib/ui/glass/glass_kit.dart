@@ -367,6 +367,105 @@ Future<String?> showGlassPrompt(
   return result;
 }
 
+/// 新建一项并选择放在哪里（例如新建卡组）。不用记任何特殊写法：
+/// 名字照常输入，上级从列表里点选。返回 (名字, 上级下标)，上级为 null 表示放在最外层。
+Future<(String, int?)?> showGlassNameAndPlace(
+  BuildContext context, {
+  required String title,
+  required String nameHint,
+  required String placeTitle,
+  required String noneLabel,
+  required List<String> places,
+  String confirmLabel = '确定',
+}) async {
+  final controller = TextEditingController();
+  int? place;
+  final result = await _showGlassRoute<(String, int?)>(
+    context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setState) {
+        final onSurface = Theme.of(ctx).colorScheme.onSurface;
+        Widget label(String t) => Padding(
+          padding: const EdgeInsets.only(bottom: UgkSpace.s, left: 2),
+          child: Text(
+            t,
+            style: TextStyle(
+              color: onSurface.withValues(alpha: 0.55),
+              fontSize: UgkText.tag,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: GlassPanel(
+            radius: UgkRadius.card,
+            padding: const EdgeInsets.all(UgkSpace.l),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _DialogTitle(title),
+                const SizedBox(height: UgkSpace.m),
+                label('名称'),
+                GlassTextField(
+                  key: const ValueKey('prompt-field'),
+                  controller: controller,
+                  hint: nameHint,
+                  autofocus: true,
+                ),
+                if (places.isNotEmpty) ...[
+                  const SizedBox(height: UgkSpace.m),
+                  label(placeTitle),
+                  GlassSelectRow(
+                    key: const ValueKey('place-select'),
+                    value: place == null ? noneLabel : places[place!],
+                    onTap: () async {
+                      // -1 表示「最外层」，取消返回 null
+                      final picked = await showGlassPicker<int>(
+                        ctx,
+                        title: placeTitle,
+                        items: [-1, for (var i = 0; i < places.length; i++) i],
+                        selected: place ?? -1,
+                        labelOf: (i) => i < 0 ? noneLabel : places[i],
+                      );
+                      if (picked != null) {
+                        setState(() => place = picked < 0 ? null : picked);
+                      }
+                    },
+                  ),
+                ],
+                const SizedBox(height: UgkSpace.l),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GlassPillButton(
+                        label: '取消',
+                        onTap: () => Navigator.of(ctx).pop(),
+                      ),
+                    ),
+                    const SizedBox(width: UgkSpace.ratingGap),
+                    Expanded(
+                      child: GlassPillButton(
+                        label: confirmLabel,
+                        primary: true,
+                        onTap: () =>
+                            Navigator.of(ctx).pop((controller.text, place)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+  Future<void>.delayed(const Duration(milliseconds: 400), controller.dispose);
+  return result;
+}
+
 /// 底部选择面板（替代 DropdownButton 的菜单）
 Future<T?> showGlassPicker<T>(
   BuildContext context, {
