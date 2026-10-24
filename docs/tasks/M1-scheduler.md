@@ -159,8 +159,8 @@ class LearningSteps {
 int _maybeRoundInDays(int secs) =>
     secs > kDaySecs ? (secs / kDaySecs).round() * kDaySecs : secs;
 ```
-- [ ] 3.1 写完上面代码。
-- [ ] 3.2 `test/learning_steps_test.dart`，下面每一行一个断言，**全部必须通过**：
+- [x] 3.1 写完上面代码。
+- [x] 3.2 `test/learning_steps_test.dart`，下面每一行一个断言，**全部必须通过**：
 
 | steps（分钟） | remaining | againDelaySecs | hardDelaySecs | goodDelaySecs |
 |---|---|---|---|---|
@@ -174,7 +174,7 @@ int _maybeRoundInDays(int secs) =>
 
 另加：`[1,10]` 的 `remainingForGood(2) == 1`，`remainingForGood(1) == 0`，`remainingForFailed() == 2`。
 
-- [ ] 3.3 `dart test test/learning_steps_test.dart` 全绿。提交推送。
+- [x] 3.3 `dart test test/learning_steps_test.dart` 全绿。提交推送。
 
 ---
 
