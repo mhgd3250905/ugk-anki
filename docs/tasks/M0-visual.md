@@ -183,14 +183,14 @@ Scaffold(backgroundColor: Colors.transparent, body:
 - 评分按钮四个独立中性玻璃，不再染色、不再融合；上行彩色间隔、下行中文名（重来/困难/良好/简单）。
 
 ## 步骤 8：拉取并检查
-- [ ] 8.1 `git fetch && git checkout feat/m0-visual && git pull`
-- [ ] 8.2 `cd app && flutter pub get && flutter analyze`，必须 `No issues found!`。有报错就停，把原文写进「问题记录」，推送后汇报。
+- [x] 8.1 `git fetch && git checkout feat/m0-visual && git pull`
+- [x] 8.2 `cd app && flutter pub get && flutter analyze`，必须 `No issues found!`。有报错就停，把原文写进「问题记录」，推送后汇报。
 
 ## 步骤 9：真机截图（覆盖旧图）
-- [ ] 9.1 `flutter run --release --enable-flutter-gpu`，同一台 2602BRT18C。
-- [ ] 9.2 重新截 4 张，**覆盖** `docs/screenshots/m0/` 下同名文件：`light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`。
-- [ ] 9.3 对照组：把 `tokens.dart` 的 `useFake` **临时**改成 `false`，release 运行，只截一张浅色背面存为 `docs/screenshots/m0/light-back-real.png`；截完把 `useFake` 改回 `true`，确认 `git diff app/` 为空。
-- [ ] 9.4 重新录 `flip.mp4`（10 秒内：显示答案 → 点良好 → 回正面），覆盖旧文件。
+- [x] 9.1 `flutter run --release --enable-flutter-gpu`，同一台 2602BRT18C。
+- [x] 9.2 重新截 4 张，**覆盖** `docs/screenshots/m0/` 下同名文件：`light-front.png`、`light-back.png`、`dark-front.png`、`dark-back.png`。
+- [x] 9.3 对照组：把 `tokens.dart` 的 `useFake` **临时**改成 `false`，release 运行，只截一张浅色背面存为 `docs/screenshots/m0/light-back-real.png`；截完把 `useFake` 改回 `true`，确认 `git diff app/` 为空。
+- [x] 9.4 重新录 `flip.mp4`（10 秒内：显示答案 → 点良好 → 回正面），覆盖旧文件。
 - [ ] 9.5 提交推送：`M0.1: 真机截图`。在 PR #4 下评论贴 5 张新图。
 
 ## M0.1 验收清单（汇报时原样贴）
