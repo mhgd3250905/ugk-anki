@@ -375,8 +375,8 @@ review    = ReviewState(scheduledDays: failDays, elapsedDays: 0,
 
 注意：重学阶段任何按钮都**不改 ease**，返回的 ReviewState 的 `leeched` 一律为 false。
 
-- [ ] 6.5 写完 6.1–6.4。
-- [ ] 6.6 `test/learning_test.dart`（默认 preset，fuzz=null）：
+- [x] 6.5 写完 6.1–6.4。
+- [x] 6.6 `test/learning_test.dart`（默认 preset，fuzz=null）：
 
 | 起始状态 | Again | Hard | Good | Easy |
 |---|---|---|---|---|
@@ -388,7 +388,7 @@ review    = ReviewState(scheduledDays: failDays, elapsedDays: 0,
   - preset `learnSteps: [10]`，Learn(r=1) 的 Hard = Learn(r=1, 900s)。
   - preset `learnSteps: []`，NewState 的 Again/Hard/Good = Review(1d)，Easy = Review(4d)。
 
-- [ ] 6.7 `test/review_test.dart`（默认 preset，fuzz=null）。表中 Review(sd, el, ease) 表示 `scheduledDays, elapsedDays, ease`。
+- [x] 6.7 `test/review_test.dart`（默认 preset，fuzz=null）。表中 Review(sd, el, ease) 表示 `scheduledDays, elapsedDays, ease`。
 
 | 起始 Review(sd, el, ease) | Hard 天数 | Good 天数 | Easy 天数 | Hard 后 ease | Easy 后 ease |
 |---|---|---|---|---|---|
@@ -424,12 +424,12 @@ Leech 测试（直接测 `leechThresholdMet`）：
   - 阈值 0：任何值 false
   - Review(10,10,2500, lapses 7) 按 Again → review.leeched == true，lapses == 8
 
-- [ ] 6.8 `test/relearning_test.dart`（默认 preset，relearnSteps [10]），起始 `RelearnState(learning: Learn(r=1, 600s), review: Review(1d, el 0, ease 2300, lapses 1))`：
+- [x] 6.8 `test/relearning_test.dart`（默认 preset，relearnSteps [10]），起始 `RelearnState(learning: Learn(r=1, 600s), review: Review(1d, el 0, ease 2300, lapses 1))`：
   - Again → RelearnState(Learn(r=1, 600s), review 不变)
   - Hard → RelearnState(Learn(r=1, 900s), review 不变)
   - Good → Review(1d, ease 2300, lapses 1)
   - Easy → Review(2d, ease 2300, lapses 1)
-- [ ] 6.9 全部测试全绿。提交推送。
+- [x] 6.9 全部测试全绿。提交推送。
 
 ---
 
