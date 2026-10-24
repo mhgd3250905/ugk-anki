@@ -50,7 +50,7 @@
 - [x] 1.6 `flutter analyze` 无报错。提交推送。
 
 ## 步骤 2：目录和设计令牌
-- [ ] 2.1 建文件：
+- [x] 2.1 建文件：
 ```
 app/lib/main.dart
 app/lib/app.dart                         // MaterialApp，跟随系统深浅色
@@ -63,7 +63,7 @@ app/lib/ui/glass/glass_icon_button.dart
 app/lib/ui/screens/review_preview_screen.dart
 app/lib/ui/screens/fake_data.dart
 ```
-- [ ] 2.2 `tokens.dart` 至少包含（数值照抄，之后开哥调）：
+- [x] 2.2 `tokens.dart` 至少包含（数值照抄，之后开哥调）：
 ```dart
 class UgkColors {
   static const newBlue = Color(0xFF0A84FF);
