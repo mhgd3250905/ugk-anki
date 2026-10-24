@@ -40,7 +40,7 @@ int dayCutoffMs({required int today, required int collectionCreatedMs,
 - `dayNumber = absDay(nowMs) - absDay(collectionCreatedMs)`。创建当天 = 0。
 - `dayCutoffMs`（第 today 天结束、下一天开始的时刻）= `(absDay(collectionCreatedMs) + today + 1) * 86400000 - shift`。
 - 上海 utcOffsetMinutes = 480；调用方以后从手机时区取，本任务不管。
-- [ ] 2.1 实现，`dart test test/queue_day_test.dart` 全绿。提交推送。
+- [x] 2.1 实现，`dart test test/queue_day_test.dart` 全绿。提交推送。
 
 ## 步骤 3：study_queue.dart 之一：工具函数
 ```dart
