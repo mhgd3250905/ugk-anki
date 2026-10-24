@@ -1,3 +1,4 @@
+/// 一天的秒数
 const int kDaySecs = 86400;
 
 /// 学习/重学步骤计算
@@ -50,6 +51,7 @@ class LearningSteps {
   /// 按 Again 后的剩余步数
   int remainingForFailed() => steps.length;
 
+  /// 是否没有步骤
   bool get isEmpty => steps.isEmpty;
 }
 

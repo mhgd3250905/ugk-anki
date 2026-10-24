@@ -578,18 +578,18 @@ Map<Rating, String> previewLabels(Card card, DeckPreset p, {required int today})
 | 6b | 169 | Good | review，ivl 1，due 170 |
 | 7 | 170 | Good | ivl 3，due 173 |
 
-- [ ] 10.1 写完，全绿。
-- [ ] 10.2 在 `packages/core` 执行 `dart analyze` 和 `dart test`，**全部通过、0 warning**。把 `dart test` 最后一行输出（如 `+87: All tests passed!`）贴进汇报。
+- [x] 10.1 写完，全绿。
+- [x] 10.2 在 `packages/core` 执行 `dart analyze` 和 `dart test`，**全部通过、0 warning**。把 `dart test` 最后一行输出（如 `+87: All tests passed!`）贴进汇报。
 - [ ] 10.3 提交推送，开 Draft PR `M1 调度器` 到 main。
 
 ---
 
 ## 验收清单（汇报时原样贴，逐项勾选）
-- [ ] `packages/core` 没有任何 dependencies，只有 dev 依赖 test
-- [ ] core 里搜不到 `DateTime.now`，搜不到无参数的 `Random()`
-- [ ] ease 全程是 int 千分比
-- [ ] 步骤 3/4/6/8/9/10 的所有表格都写成了测试，期望值一个没改
-- [ ] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
+- [x] `packages/core` 没有任何 dependencies，只有 dev 依赖 test
+- [x] core 里搜不到 `DateTime.now`，搜不到无参数的 `Random()`
+- [x] ease 全程是 int 千分比
+- [x] 步骤 3/4/6/8/9/10 的所有表格都写成了测试，期望值一个没改
+- [x] `dart analyze` 0 issue，`dart test` 全部通过（贴最后一行）
 - [ ] Draft PR 已开，未合并
 
 ## 问题记录
