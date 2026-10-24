@@ -35,12 +35,12 @@ M0 的玻璃组件（`lib/ui/glass/glass_card.dart` 等）和 `review_preview_sc
 ---
 
 ## 步骤 1：拉代码、编译检查
-- [ ] 1.1 `git fetch && git checkout feat/m5-mvp && git pull`
-- [ ] 1.2 `cd app && flutter pub get` 成功。
-- [ ] 1.3 `dart format lib test`；如有变化，单独提交 `M5: dart format`。
-- [ ] 1.4 `flutter analyze` → `No issues found!`
-- [ ] 1.5 `flutter test` → `+4: All tests passed!`
-- [ ] 1.6 提交推送（`M5: 本机编译与测试通过`）。
+- [x] 1.1 `git fetch && git checkout feat/m5-mvp && git pull`
+- [x] 1.2 `cd app && flutter pub get` 成功。
+- [x] 1.3 `dart format lib test`；如有变化，单独提交 `M5: dart format`。
+- [x] 1.4 `flutter analyze` → `No issues found!`
+- [x] 1.5 `flutter test` → `+4: All tests passed!`
+- [x] 1.6 提交推送（`M5: 本机编译与测试通过`）。
 
 ## 步骤 2：真机安装
 - [ ] 2.1 **先在手机上卸载旧的 ugk-anki**（M0 版本没有数据库，避免残留）。
