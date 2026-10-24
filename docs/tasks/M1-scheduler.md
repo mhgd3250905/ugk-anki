@@ -556,9 +556,9 @@ Map<Rating, String> previewLabels(Card card, DeckPreset p, {required int today})
   - d < 365 → 月数 `d / 30` 保留 1 位小数，去掉末尾 `.0`，加 `mo`（45→`1.5mo`，60→`2mo`）
   - 否则 → 年数 `d / 365` 保留 1 位小数，去掉 `.0`，加 `y`（365→`1y`，400→`1.1y`）
 
-- [ ] 9.1 写完。
-- [ ] 9.2 `test/interval_format_test.dart`：上面括号里的每个例子一个断言；再加：新卡默认 preset 的 `previewLabels` == `{again: '<1m', hard: '<6m', good: '<10m', easy: '4d'}`。
-- [ ] 9.3 全绿。提交推送。
+- [x] 9.1 写完。
+- [x] 9.2 `test/interval_format_test.dart`：上面括号里的每个例子一个断言；再加：新卡默认 preset 的 `previewLabels` == `{again: '<1m', hard: '<6m', good: '<10m', easy: '4d'}`。
+- [x] 9.3 全绿。提交推送。
 
 ---
 
