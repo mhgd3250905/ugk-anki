@@ -115,8 +115,8 @@ const fakeLabels = ['<1m', '<6m', '<10m', '4d'];   // Again / Hard / Good / Easy
 - [x] 5.5 每个组件写完都 `flutter analyze` 一次。每完成两个组件提交推送一次。
 
 ## 步骤 6：页面（review_preview_screen.dart）
-- [ ] 6.1 `ReviewPreviewScreen` 是 StatefulWidget，状态只有 `bool showBack = false`。
-- [ ] 6.2 结构（照抄层级）：
+- [x] 6.1 `ReviewPreviewScreen` 是 StatefulWidget，状态只有 `bool showBack = false`。
+- [x] 6.2 结构（照抄层级）：
 ```
 Scaffold(backgroundColor: Colors.transparent, body:
   Stack(children: [
@@ -137,9 +137,9 @@ Scaffold(backgroundColor: Colors.transparent, body:
   ]),
 )
 ```
-- [ ] 6.3 点「显示答案」或点卡片 → `showBack = true`；点任意评分按钮 → 回到正面。
-- [ ] 6.4 `app.dart` 的 `home` 直接是 `ReviewPreviewScreen`，`themeMode: ThemeMode.system`，Material 3。状态栏透明（`SystemUiOverlayStyle`，图标颜色跟随深浅色）。
-- [ ] 6.5 提交推送。
+- [x] 6.3 点「显示答案」或点卡片 → `showBack = true`；点任意评分按钮 → 回到正面。
+- [x] 6.4 `app.dart` 的 `home` 直接是 `ReviewPreviewScreen`，`themeMode: ThemeMode.system`，Material 3。状态栏透明（`SystemUiOverlayStyle`，图标颜色跟随深浅色）。
+- [x] 6.5 提交推送。
 
 ## 步骤 7：真机运行和截图
 - [ ] 7.1 `cd app && flutter run --release --enable-flutter-gpu`（release 模式看真实性能）。

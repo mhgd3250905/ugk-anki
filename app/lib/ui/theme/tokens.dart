@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 /// 颜色令牌
 class UgkColors {
+  static const transparent = Color(0x00000000);
   static const newBlue = Color(0xFF0A84FF);
   static const learnRed = Color(0xFFFF453A);
   static const reviewGreen = Color(0xFF30D158);
