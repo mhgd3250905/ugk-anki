@@ -83,7 +83,8 @@ class _ImportScreenState extends State<ImportScreen> {
         if (i != _tagsCol && i != _t.notetypeColumn && i != _t.deckColumn) i,
     ];
     _fieldCols = [
-      for (var i = 0; i < t.fields.length; i++) i < free.length ? free[i] : null,
+      for (var i = 0; i < t.fields.length; i++)
+        i < free.length ? free[i] : null,
     ];
   }
 
@@ -223,7 +224,10 @@ class _ImportScreenState extends State<ImportScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            _Label(_fileDriven ? '默认类型（文件里认不出时用）' : '类型', color),
+                            _Label(
+                              _fileDriven ? '默认类型（文件里认不出时用）' : '类型',
+                              color,
+                            ),
                             GlassSegmented<NoteType>(
                               items: _types,
                               selected: type,
@@ -231,7 +235,10 @@ class _ImportScreenState extends State<ImportScreen> {
                               onSelect: (t) => setState(() => _selectType(t)),
                             ),
                             const SizedBox(height: UgkSpace.m),
-                            _Label(_t.deckColumn != null ? '默认卡组（文件里没写时用）' : '卡组', color),
+                            _Label(
+                              _t.deckColumn != null ? '默认卡组（文件里没写时用）' : '卡组',
+                              color,
+                            ),
                             GlassSelectRow(
                               key: const ValueKey('import-deck'),
                               value: deckName ?? '',

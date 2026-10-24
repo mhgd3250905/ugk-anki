@@ -199,9 +199,8 @@ class _DeckListScreenState extends State<DeckListScreen> {
       danger: true,
     );
     if (!ok || !mounted) return;
-    await RepoScope.of(context).restoreJson(
-      utf8.decode(file.bytes, allowMalformed: true),
-    );
+    await RepoScope.of(context)
+        .restoreJson(utf8.decode(file.bytes, allowMalformed: true));
     if (mounted) showGlassToast(context, '已从备份恢复');
   }
 

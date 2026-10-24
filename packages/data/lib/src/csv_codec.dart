@@ -26,8 +26,7 @@ class CsvTable {
   final int? deckColumn;
 
   /// 最宽一行的列数
-  int get columnCount =>
-      rows.fold(0, (m, r) => r.length > m ? r.length : m);
+  int get columnCount => rows.fold(0, (m, r) => r.length > m ? r.length : m);
 }
 
 const _separatorNames = {
@@ -57,7 +56,8 @@ CsvTable parseCsv(String text) {
       final value = line.substring(colon + 1).trim();
       switch (key) {
         case 'separator':
-          delimiter = _separatorNames[value.toLowerCase()] ??
+          delimiter =
+              _separatorNames[value.toLowerCase()] ??
               (value.isNotEmpty ? value[0] : null);
         case 'html':
           html = value.toLowerCase() == 'true';
@@ -72,11 +72,14 @@ CsvTable parseCsv(String text) {
     offset += raw.length + 1;
     bodyStart++;
   }
-  final body = bodyStart == 0 ? text : text.substring(offset.clamp(0, text.length));
+  final body = bodyStart == 0
+      ? text
+      : text.substring(offset.clamp(0, text.length));
   delimiter ??= _guessDelimiter(body);
-  final rows = _parseBody(body, delimiter)
-      .where((r) => r.any((c) => c.trim().isNotEmpty))
-      .toList();
+  final rows = _parseBody(
+    body,
+    delimiter,
+  ).where((r) => r.any((c) => c.trim().isNotEmpty)).toList();
   return CsvTable(
     rows: rows,
     delimiter: delimiter,
@@ -93,10 +96,9 @@ int? _col(String v) {
 }
 
 String _guessDelimiter(String body) {
-  final first = body.split('\n').firstWhere(
-    (l) => l.trim().isNotEmpty,
-    orElse: () => '',
-  );
+  final first = body
+      .split('\n')
+      .firstWhere((l) => l.trim().isNotEmpty, orElse: () => '');
   if (first.contains('\t')) return '\t';
   final semi = ';'.allMatches(first).length;
   final comma = ','.allMatches(first).length;
@@ -167,7 +169,10 @@ String writeCsv(
 }
 
 String _quote(String c, String d) {
-  if (c.contains(d) || c.contains('"') || c.contains('\n') || c.contains('\r')) {
+  if (c.contains(d) ||
+      c.contains('"') ||
+      c.contains('\n') ||
+      c.contains('\r')) {
     return '"${c.replaceAll('"', '""')}"';
   }
   return c;

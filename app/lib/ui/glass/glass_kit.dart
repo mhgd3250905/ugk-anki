@@ -70,7 +70,9 @@ class GlassPillButton extends StatelessWidget {
                 style: TextStyle(
                   color: enabled ? color : color.withValues(alpha: 0.35),
                   fontSize: UgkText.button,
-                  fontWeight: primary || danger ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: primary || danger
+                      ? FontWeight.w700
+                      : FontWeight.w500,
                 ),
               ),
             ),

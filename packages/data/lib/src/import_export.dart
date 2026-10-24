@@ -135,7 +135,8 @@ extension ImportExport on UgkRepository {
         var type = types[o.noteTypeId]!;
         var byFileType = false;
         if (table.notetypeColumn != null) {
-          final t = typesByName[cell(row, table.notetypeColumn).trim().toLowerCase()];
+          final t =
+              typesByName[cell(row, table.notetypeColumn).trim().toLowerCase()];
           if (t != null) {
             type = t;
             byFileType = true;
@@ -176,10 +177,7 @@ extension ImportExport on UgkRepository {
           dups++;
           continue;
         }
-        final tags = [
-          ...parseTags(cell(row, tagsCol)),
-          ...o.extraTags,
-        ];
+        final tags = [...parseTags(cell(row, tagsCol)), ...o.extraTags];
         try {
           final ids = await addNote(
             noteTypeId: type.id,
@@ -218,22 +216,27 @@ extension ImportExport on UgkRepository {
           if (d.name == root || d.name.startsWith('$root::')) d.id,
       };
     }
-    final cardRows = await (db.select(db.cards)
-          ..orderBy([(c) => OrderingTerm.asc(c.noteId), (c) => OrderingTerm.asc(c.ord)]))
-        .get();
+    final cardRows =
+        await (db.select(db.cards)..orderBy([
+              (c) => OrderingTerm.asc(c.noteId),
+              (c) => OrderingTerm.asc(c.ord),
+            ]))
+            .get();
     final noteDeck = <int, int>{};
     for (final c in cardRows) {
       if (wanted != null && !wanted.contains(c.deckId)) continue;
       noteDeck.putIfAbsent(c.noteId, () => c.deckId);
     }
     final types = {for (final t in await noteTypes()) t.id: t};
-    final noteRows = await (db.select(db.notes)
-          ..where((n) => n.id.isIn(noteDeck.keys))
-          ..orderBy([(n) => OrderingTerm.asc(n.id)]))
-        .get();
+    final noteRows =
+        await (db.select(db.notes)
+              ..where((n) => n.id.isIn(noteDeck.keys))
+              ..orderBy([(n) => OrderingTerm.asc(n.id)]))
+            .get();
     final width = noteRows.fold<int>(
       1,
-      (m, n) => splitFields(n.fields).length > m ? splitFields(n.fields).length : m,
+      (m, n) =>
+          splitFields(n.fields).length > m ? splitFields(n.fields).length : m,
     );
     final rows = [
       for (final n in noteRows)
@@ -310,8 +313,6 @@ extension ImportExport on UgkRepository {
         }
       }
     });
-    db.notifyUpdates({
-      for (final t in db.allTables) TableUpdate.onTable(t),
-    });
+    db.notifyUpdates({for (final t in db.allTables) TableUpdate.onTable(t)});
   }
 }

@@ -169,7 +169,10 @@ void main() {
         nowMs: t0 + 1,
       );
       final all = await repo.exportCsv();
-      expect(all, startsWith('#separator:tab\n#html:true\n#notetype column:1\n'));
+      expect(
+        all,
+        startsWith('#separator:tab\n#html:true\n#notetype column:1\n'),
+      );
       final onlyDance = await repo.exportCsv(deckId: dance);
       expect(parseCsv(onlyDance).rows.length, 1);
 
