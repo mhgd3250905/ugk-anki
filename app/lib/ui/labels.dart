@@ -49,7 +49,7 @@ String? addNoteProblem(NoteType type, List<String> fields) {
   if (type.kind == NoteKind.cloze) {
     if (first.isEmpty) return '正文还没填';
     if (!_clozeNum.hasMatch(fields.first)) {
-      return '还没有要挖空的词：选中正文里的一段文字，再点「挖空」';
+      return '还没有挖空：在正文下面点选要考的字，选中的会变蓝';
     }
     return null;
   }

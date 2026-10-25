@@ -7,7 +7,7 @@ import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
-import '../cloze_controller.dart';
+import '../cloze_picker.dart';
 import '../labels.dart';
 import '../theme/tokens.dart';
 
@@ -29,6 +29,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   List<TextEditingController> _fields = [];
   final TextEditingController _tags = TextEditingController();
   final List<String> _tagList = [];
+
+  /// 填空：正文里被点选要考的字（下标）
+  Set<int> _picked = {};
+  String _clozeText = '';
   bool _saving = false;
 
   @override
@@ -55,22 +59,19 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       c.dispose();
     }
     _type = t;
-    _fields = [
-      for (var i = 0; i < t.fields.length; i++)
-        i == 0 && t.kind == NoteKind.cloze
-            ? ClozeEditingController()
-            : TextEditingController(),
-    ];
-  }
-
-  /// 选中文字后挖空；没选中时提示，不插入看不见的空挖空
-  void _cloze() {
-    final v = _fields[0].value;
-    if (!v.selection.isValid || v.selection.isCollapsed) {
-      showGlassToast(context, '先在正文里选中要考的词，再点「挖空」', warn: true);
-      return;
+    _fields = [for (final _ in t.fields) TextEditingController()];
+    _picked = {};
+    _clozeText = '';
+    if (t.kind == NoteKind.cloze) {
+      final c = _fields[0];
+      c.addListener(() {
+        if (c.text == _clozeText) return;
+        setState(() {
+          _picked = shiftPicked(_clozeText, c.text, _picked);
+          _clozeText = c.text;
+        });
+      });
     }
-    setState(() => _fields[0].value = applyCloze(v));
   }
 
   /// 输入空格或逗号时，把前面的文字变成一个标签
@@ -91,7 +92,13 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   Future<void> _save() async {
     final type = _type;
     if (type == null || _saving) return;
-    final problem = addNoteProblem(type, [for (final c in _fields) c.text]);
+    final values = [
+      for (var i = 0; i < _fields.length; i++)
+        i == 0 && type.kind == NoteKind.cloze
+            ? buildClozeText(_fields[0].text, _picked)
+            : _fields[i].text,
+    ];
+    final problem = addNoteProblem(type, values);
     if (problem != null) {
       showGlassToast(context, problem, warn: true);
       return;
@@ -101,13 +108,14 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       final ids = await RepoScope.of(context).addNote(
         noteTypeId: type.id,
         deckId: _deckId,
-        fields: [for (final c in _fields) c.text],
+        fields: values,
         tags: [..._tagList, ...splitTags(_tags.text)],
         nowMs: nowMs(),
       );
       for (final c in _fields) {
         c.clear();
       }
+      _picked = {};
       if (mounted) showGlassToast(context, '已添加 ${ids.length} 张卡片');
     } on StateError {
       if (mounted) {
@@ -212,30 +220,18 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                                     : null,
                               ),
                               if (i == 0 && type.kind == NoteKind.cloze) ...[
+                                const SizedBox(height: UgkSpace.m),
+                                _Label('点选要考的字（点一下变蓝，再点取消）', color),
+                                ClozePicker(
+                                  key: const ValueKey('cloze-picker'),
+                                  text: _fields[0].text,
+                                  picked: _picked,
+                                  onChanged: (p) => setState(() => _picked = p),
+                                ),
                                 const SizedBox(height: UgkSpace.s),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 96,
-                                      child: GlassPillButton(
-                                        key: const ValueKey('cloze'),
-                                        label: '挖空',
-                                        primary: true,
-                                        height: 40,
-                                        onTap: _cloze,
-                                      ),
-                                    ),
-                                    const SizedBox(width: UgkSpace.m),
-                                    Expanded(
-                                      child: Text(
-                                        '选中要考的词，点挖空；在蓝色词边上删字可取消',
-                                        style: TextStyle(
-                                          color: color.withValues(alpha: 0.5),
-                                          fontSize: UgkText.hint,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                ClozePreview(
+                                  text: _fields[0].text,
+                                  picked: _picked,
                                 ),
                               ],
                             ],

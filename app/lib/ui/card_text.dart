@@ -5,9 +5,13 @@ String cardPlainText(String html) {
   final withBreaks = html
       .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
       .replaceAll(RegExp(r'</(div|p)>', caseSensitive: false), '\n');
-  return stripHtml(
-    withBreaks,
-  ).split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).join('\n');
+  return stripHtml(withBreaks)
+      // 填空的 [...] 显示成横线空格，小白一看就懂
+      .replaceAll(RegExp(r'\[(\.\.\.|…)\]'), '＿＿＿')
+      .split('\n')
+      .map((l) => l.trim())
+      .where((l) => l.isNotEmpty)
+      .join('\n');
 }
 
 /// 背面只取 `<hr id=answer>` 之后的部分；没有分隔线时整段显示

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ugk_anki/app.dart';
 import 'package:ugk_anki/data/clock.dart';
-import 'package:ugk_anki/ui/cloze_controller.dart';
+import 'package:ugk_anki/ui/card_text.dart';
+import 'package:ugk_anki/ui/cloze_picker.dart';
 import 'package:ugk_anki/ui/labels.dart';
 import 'package:ugk_data/ugk_data.dart';
 
@@ -21,40 +22,41 @@ void main() {
     expect(splitTags('街舞, 邀约，口语、 英语'), ['街舞', '邀约', '口语', '英语']);
   });
 
-  group('填空输入框', () {
-    test('光标不会停在隐藏记号里', () {
-      final c = ClozeEditingController(text: '巴黎是{{c1::法国}}的首都');
-      c.selection = const TextSelection.collapsed(offset: 5); // 在 {{c1:: 中间
-      expect(c.selection.baseOffset, '巴黎是{{c1::'.length);
-      c.selection = TextSelection.collapsed(
-        offset: '巴黎是{{c1::法国}'.length,
-      ); // 在 }} 中间
-      expect(c.selection.baseOffset, '巴黎是{{c1::法国}}'.length);
+  group('点字挖空', () {
+    test('中文一字一块，英文一词一块，标点不可点', () {
+      final t = clozeTokens('Paris 是法国，的');
+      expect([for (final x in t) x.text], ['Paris', '是', '法', '国', '，', '的']);
+      expect(t[4].pickable, isFalse);
     });
 
-    test('在挖空边上删字 = 取消挖空，词保留', () {
-      final c = ClozeEditingController(text: '巴黎是{{c1::法国}}的首都');
-      const after = '巴黎是{{c1::法国}}';
-      // 光标在挖空后面按退格，删掉的是隐藏的 }
-      c.value = TextEditingValue(
-        text: '巴黎是{{c1::法国}的首都',
-        selection: TextSelection.collapsed(offset: after.length - 1),
+    test('连着的字合成一处挖空，分开的各算一处', () {
+      expect(buildClozeText('巴黎是法国的首都', {3, 4}), '巴黎是{{c1::法国}}的首都');
+      expect(
+        buildClozeText('巴黎是法国的首都', {0, 1, 6, 7}),
+        '{{c1::巴黎}}是法国的{{c2::首都}}',
       );
-      expect(c.text, '巴黎是法国的首都');
-      expect(c.selection.baseOffset, '巴黎是法国'.length);
+      // 英文词之间隔空格也算连着
+      final t = 'I love New York';
+      final picked = {for (var i = 7; i < 15; i++) i}..remove(10);
+      expect(buildClozeText(t, picked), 'I love {{c1::New York}}');
     });
 
-    test('普通输入不受影响', () {
-      final c = ClozeEditingController(text: '{{c1::a}}');
-      c.value = const TextEditingValue(
-        text: '{{c1::a}}b',
-        selection: TextSelection.collapsed(offset: 10),
+    test('改正文时尽量保留选中', () {
+      // 在前面加字，选中跟着往后挪
+      expect(shiftPicked('法国的首都', '巴黎是法国的首都', {0, 1}), {3, 4});
+      // 改掉被选的字，选中取消
+      expect(shiftPicked('巴黎是法国', '巴黎是德国', {3, 4}), {4});
+    });
+
+    test('复习时 [...] 显示成横线', () {
+      expect(
+        cardPlainText('巴黎是<span class=cloze>[...]</span>的首都'),
+        '巴黎是＿＿＿的首都',
       );
-      expect(c.text, '{{c1::a}}b');
     });
   });
 
-  testWidgets('添加页：填空不露记号，标签变成小标签，菜单是中文', (tester) async {
+  testWidgets('添加页：点字挖空，标签变成小标签，菜单是中文', (tester) async {
     late UgkDatabase db;
     await tester.runAsync(() async {
       db = UgkDatabase(NativeDatabase.memory());
@@ -87,27 +89,21 @@ void main() {
       matching: find.byType(EditableText),
     );
     await tester.enterText(field, '巴黎是法国的首都');
-    // 没选中就点挖空：提示，不插入看不见的东西
-    await tester.tap(find.byKey(const ValueKey('cloze')));
     await tester.pump();
-    expect(find.textContaining('先在正文里选中'), findsOneWidget);
-    final ctrl = tester.widget<EditableText>(field).controller;
-    expect(ctrl.text, '巴黎是法国的首都');
-    ctrl.selection = const TextSelection(baseOffset: 3, extentOffset: 5);
-    await tester.tap(find.byKey(const ValueKey('cloze')));
+    // 正文下面出现一个个字块，点「法」「国」
+    await tester.tap(find.byKey(const ValueKey('tok-3')));
     await tester.pump();
-    expect(ctrl.text, '巴黎是{{c1::法国}}的首都');
-    // 屏幕上画出来的只有「法国」（记号字号接近 0、透明）
-    final span = ctrl.buildTextSpan(
-      context: tester.element(field),
-      withComposing: false,
-    );
-    final hidden = <String>[];
-    span.visitChildren((s) {
-      if (s is TextSpan && (s.style?.fontSize ?? 14) < 1) hidden.add(s.text!);
-      return true;
-    });
-    expect(hidden, ['{{c1::', '}}']);
+    await tester.tap(find.byKey(const ValueKey('tok-4')));
+    await tester.pump();
+    expect(find.text('复习时会这样考：巴黎是＿＿＿的首都'), findsOneWidget);
+    // 正文本身不变，界面上没有任何记号
+    expect(tester.widget<EditableText>(field).controller.text, '巴黎是法国的首都');
+    expect(find.textContaining('{{'), findsNothing);
+    // 再点一下取消
+    await tester.tap(find.byKey(const ValueKey('tok-4')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('tok-4')));
+    await tester.pump();
 
     final tags = find.descendant(
       of: find.byKey(const ValueKey('tags')),
