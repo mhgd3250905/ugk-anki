@@ -116,7 +116,7 @@ void main() {
       Uint8List.fromList([0, 0, 0, 24, 102, 116, 121, 112, 255, 254, 0, 1]),
     );
     await menu(tester, 0);
-    expect(find.text('这不是文本文件，请选 CSV 或 TXT'), findsOneWidget);
+    expect(find.text('这个文件读不了，请选 Excel 另存的 CSV 文件或文本文件'), findsOneWidget);
     await finishToast(tester);
 
     files.next = PickedFile(

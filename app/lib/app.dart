@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 
 import 'package:ugk_data/ugk_data.dart';
@@ -21,6 +22,10 @@ class UgkAnkiApp extends StatelessWidget {
       theme: _theme(Brightness.light),
       darkTheme: _theme(Brightness.dark),
       themeMode: ThemeMode.system,
+      // 系统控件（长按选词菜单等）显示中文
+      locale: const Locale('zh', 'CN'),
+      supportedLocales: const [Locale('zh', 'CN')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: const DeckListScreen(),
       builder: (context, child) {
         final brightness = MediaQuery.platformBrightnessOf(context);

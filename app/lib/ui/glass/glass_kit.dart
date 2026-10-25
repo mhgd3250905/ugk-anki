@@ -91,6 +91,7 @@ class GlassTextField extends StatelessWidget {
     this.autofocus = false,
     this.maxLines = 1,
     this.onSubmitted,
+    this.onChanged,
     super.key,
   });
 
@@ -99,6 +100,7 @@ class GlassTextField extends StatelessWidget {
   final bool autofocus;
   final int maxLines;
   final ValueChanged<String>? onSubmitted;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +118,7 @@ class GlassTextField extends StatelessWidget {
         minLines: 1,
         maxLines: maxLines,
         onSubmitted: onSubmitted,
+        onChanged: onChanged,
         cursorColor: UgkColors.newBlue,
         style: TextStyle(color: onSurface, fontSize: UgkText.field),
         decoration: InputDecoration.collapsed(

@@ -7,6 +7,7 @@ import '../../data/repo_scope.dart';
 import '../glass/glass_icon_button.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
+import '../cloze_controller.dart';
 import '../labels.dart';
 import '../theme/tokens.dart';
 
@@ -27,6 +28,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   late int _deckId = widget.initialDeckId;
   List<TextEditingController> _fields = [];
   final TextEditingController _tags = TextEditingController();
+  final List<String> _tagList = [];
   bool _saving = false;
 
   @override
@@ -53,7 +55,37 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       c.dispose();
     }
     _type = t;
-    _fields = [for (final _ in t.fields) TextEditingController()];
+    _fields = [
+      for (var i = 0; i < t.fields.length; i++)
+        i == 0 && t.kind == NoteKind.cloze
+            ? ClozeEditingController()
+            : TextEditingController(),
+    ];
+  }
+
+  /// 选中文字后挖空；没选中时提示，不插入看不见的空挖空
+  void _cloze() {
+    final v = _fields[0].value;
+    if (!v.selection.isValid || v.selection.isCollapsed) {
+      showGlassToast(context, '先在正文里选中要考的词，再点「挖空」', warn: true);
+      return;
+    }
+    setState(() => _fields[0].value = applyCloze(v));
+  }
+
+  /// 输入空格或逗号时，把前面的文字变成一个标签
+  void _onTagTyping(String text) {
+    if (RegExp(r'[\s,，、;；]').hasMatch(text)) _commitTags();
+  }
+
+  void _commitTags() {
+    final add = splitTags(_tags.text);
+    setState(() {
+      for (final t in add) {
+        if (!_tagList.contains(t)) _tagList.add(t);
+      }
+      _tags.clear();
+    });
   }
 
   Future<void> _save() async {
@@ -70,7 +102,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         noteTypeId: type.id,
         deckId: _deckId,
         fields: [for (final c in _fields) c.text],
-        tags: parseTags(_tags.text),
+        tags: [..._tagList, ...splitTags(_tags.text)],
         nowMs: nowMs(),
       );
       for (final c in _fields) {
@@ -190,17 +222,13 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                                         label: '挖空',
                                         primary: true,
                                         height: 40,
-                                        onTap: () => setState(
-                                          () => _fields[0].value = applyCloze(
-                                            _fields[0].value,
-                                          ),
-                                        ),
+                                        onTap: _cloze,
                                       ),
                                     ),
                                     const SizedBox(width: UgkSpace.m),
                                     Expanded(
                                       child: Text(
-                                        '选中要考的词，点挖空',
+                                        '选中要考的词，点挖空；在蓝色词边上删字可取消',
                                         style: TextStyle(
                                           color: color.withValues(alpha: 0.5),
                                           fontSize: UgkText.hint,
@@ -212,11 +240,28 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                               ],
                             ],
                             const SizedBox(height: UgkSpace.m),
-                            _Label('标签（空格分隔）', color),
+                            _Label('标签（可不填）', color),
+                            if (_tagList.isNotEmpty) ...[
+                              Wrap(
+                                spacing: UgkSpace.s,
+                                runSpacing: UgkSpace.s,
+                                children: [
+                                  for (final t in _tagList)
+                                    _TagChip(
+                                      t,
+                                      onRemove: () =>
+                                          setState(() => _tagList.remove(t)),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: UgkSpace.s),
+                            ],
                             GlassTextField(
                               key: const ValueKey('tags'),
                               controller: _tags,
-                              hint: '例如 街舞 邀约',
+                              hint: '输入一个标签，按回车添加',
+                              onChanged: _onTagTyping,
+                              onSubmitted: (_) => _commitTags(),
                             ),
                           ],
                         ),
@@ -248,4 +293,41 @@ class _Label extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _TagChip extends StatelessWidget {
+  const _TagChip(this.text, {required this.onRemove});
+
+  final String text;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    return GestureDetector(
+      onTap: onRemove,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 6, 8, 6),
+        decoration: BoxDecoration(
+          color: UgkColors.newBlue.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text,
+              style: TextStyle(color: onSurface, fontSize: UgkText.hint),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.close_rounded,
+              size: 14,
+              color: onSurface.withValues(alpha: 0.5),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -117,9 +117,9 @@ class _DeckListScreenState extends State<DeckListScreen> {
       context,
       title: '数据',
       actions: const [
-        GlassAction(Icons.file_download_outlined, '导入 CSV / TXT'),
-        GlassAction(Icons.file_upload_outlined, '导出全部笔记为 TXT'),
-        GlassAction(Icons.save_outlined, '备份整个库'),
+        GlassAction(Icons.file_download_outlined, '从表格文件导入卡片'),
+        GlassAction(Icons.file_upload_outlined, '导出全部卡片（可用 Excel 打开）'),
+        GlassAction(Icons.save_outlined, '备份全部数据'),
         GlassAction(Icons.restore, '从备份恢复', danger: true),
       ],
     );
@@ -148,7 +148,7 @@ class _DeckListScreenState extends State<DeckListScreen> {
     if (file == null || !mounted) return;
     final text = utf8.decode(file.bytes, allowMalformed: true);
     if (_looksBinary(text)) {
-      showGlassToast(context, '这不是文本文件，请选 CSV 或 TXT', warn: true);
+      showGlassToast(context, '这个文件读不了，请选 Excel 另存的 CSV 文件或文本文件', warn: true);
       return;
     }
     final table = parseCsv(text);

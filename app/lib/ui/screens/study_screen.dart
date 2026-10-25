@@ -63,7 +63,7 @@ class _StudyScreenState extends State<StudyScreen> {
       tag = tagLine(await repo.noteTags(card.noteId));
       final today = await repo.today(nowMs: now, utcOffsetMinutes: offset);
       final preview = previewLabels(card, preset, today: today);
-      labels = [for (final r in Rating.values) preview[r]!];
+      labels = [for (final r in Rating.values) zhInterval(preview[r]!)];
     }
     if (!mounted) return;
     setState(() {

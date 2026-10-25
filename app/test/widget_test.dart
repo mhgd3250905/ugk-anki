@@ -60,9 +60,9 @@ void main() {
     await tester.tap(find.text('hello'));
     await tester.pumpAndSettle();
     expect(find.text('你好'), findsOneWidget);
-    expect(find.text('<10m'), findsOneWidget);
+    expect(find.text('10分钟后'), findsOneWidget);
 
-    expect(find.text('4d'), findsOneWidget);
+    expect(find.text('4天后'), findsOneWidget);
     await tester.tap(find.text('简单'));
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 300)),

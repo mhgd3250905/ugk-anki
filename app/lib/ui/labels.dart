@@ -65,3 +65,25 @@ String deckLabel(String name) =>
 /// 用户输入的卡组名：去掉首尾空格，把 :: 换成全角冒号，
 /// 避免误建出层级（层级只通过「放在哪个卡组里」来选）
 String cleanDeckName(String input) => input.trim().replaceAll('::', '：');
+
+/// 复习按钮上的间隔（核心层输出 Anki 风格的 <1m / 4d / 1.5mo / 2y）
+/// 转成中文：1分钟后 / 4天后 / 1.5个月后 / 2年后
+String zhInterval(String s) {
+  final m = RegExp(r'^<?([\d.]+)(m|h|d|mo|y)$').firstMatch(s);
+  if (m == null) return s;
+  final unit = switch (m.group(2)) {
+    'm' => '分钟',
+    'h' => '小时',
+    'd' => '天',
+    'mo' => '个月',
+    _ => '年',
+  };
+  return '${m.group(1)}$unit后';
+}
+
+/// 标签输入框里的文字拆成标签：空格、逗号、顿号都算分隔
+List<String> splitTags(String s) => s
+    .split(RegExp(r'[\s,，、;；]+'))
+    .map((t) => t.trim())
+    .where((t) => t.isNotEmpty)
+    .toList();
