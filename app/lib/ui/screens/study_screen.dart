@@ -8,6 +8,7 @@ import '../card_text.dart';
 import '../glass/glass_card.dart';
 import '../glass/glass_kit.dart';
 import '../glass/glass_page.dart';
+import '../labels.dart';
 import '../glass/glass_rating_bar.dart';
 import '../glass/glass_top_bar.dart';
 import '../theme/tokens.dart';
@@ -62,7 +63,7 @@ class _StudyScreenState extends State<StudyScreen> {
       tag = tagLine(await repo.noteTags(card.noteId));
       final today = await repo.today(nowMs: now, utcOffsetMinutes: offset);
       final preview = previewLabels(card, preset, today: today);
-      labels = [for (final r in Rating.values) preview[r]!];
+      labels = [for (final r in Rating.values) zhInterval(preview[r]!)];
     }
     if (!mounted) return;
     setState(() {
@@ -97,7 +98,7 @@ class _StudyScreenState extends State<StudyScreen> {
         timeTakenMs: _watch.elapsedMilliseconds,
       );
       if (result.leechTriggered && mounted) {
-        showGlassToast(context, '这张卡忘了太多次，已标记 leech，建议改写', warn: true);
+        showGlassToast(context, '这张卡已经忘了很多次，换个更好记的写法试试', warn: true);
       }
       await _load();
     } finally {
@@ -112,7 +113,7 @@ class _StudyScreenState extends State<StudyScreen> {
       child: Column(
         children: [
           GlassTopBar(
-            title: widget.deckName,
+            title: deckLabel(widget.deckName),
             newCount: q?.newCount ?? 0,
             learnCount: q?.learnCount ?? 0,
             reviewCount: q?.reviewCount ?? 0,

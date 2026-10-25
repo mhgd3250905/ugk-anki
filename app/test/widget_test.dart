@@ -46,9 +46,9 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('卡组'), findsOneWidget);
-    expect(find.text('Default'), findsOneWidget);
+    expect(find.text('默认'), findsOneWidget);
 
-    await tester.tap(find.text('Default'));
+    await tester.tap(find.text('默认'));
     await tester.pumpAndSettle();
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 300)),
@@ -60,9 +60,9 @@ void main() {
     await tester.tap(find.text('hello'));
     await tester.pumpAndSettle();
     expect(find.text('你好'), findsOneWidget);
-    expect(find.text('<10m'), findsOneWidget);
+    expect(find.text('10分钟后'), findsOneWidget);
 
-    expect(find.text('4d'), findsOneWidget);
+    expect(find.text('4天后'), findsOneWidget);
     await tester.tap(find.text('简单'));
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 300)),
@@ -103,27 +103,41 @@ void main() {
     await tester.pumpWidget(UgkAnkiApp(repo: repo));
     await settle();
 
+    // 先建一级卡组「英语」：只填名字，不需要任何特殊写法
     await tester.tap(find.byIcon(Icons.create_new_folder_outlined));
     await tester.pumpAndSettle();
     expect(find.text('新建卡组'), findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
-    await tester.enterText(
-      editable(const ValueKey('prompt-field')),
-      'English::Dance',
-    );
+    expect(find.text('不放进其他卡组'), findsOneWidget);
+    await tester.enterText(editable(const ValueKey('prompt-field')), '英语');
     await tester.tap(find.text('创建'));
     await settle();
-    expect(find.text('Dance'), findsOneWidget);
+    expect(find.text('英语'), findsOneWidget);
+
+    // 再建「口语」，从列表里点选放进「英语」
+    await tester.tap(find.byIcon(Icons.create_new_folder_outlined));
+    await tester.pumpAndSettle();
+    await tester.enterText(editable(const ValueKey('prompt-field')), '口语');
+    await tester.tap(find.byKey(const ValueKey('place-select')));
+    await tester.pumpAndSettle();
+    expect(find.text('放在哪个卡组里'), findsWidgets);
+    await tester.tap(find.text('英语').last);
+    await tester.pumpAndSettle();
+    expect(find.text('英语'), findsWidgets);
+    await tester.tap(find.text('创建'));
+    await settle();
+    expect(find.text('口语'), findsOneWidget);
+    expect(find.textContaining('::'), findsNothing); // 界面上看不到 ::
 
     await tester.tap(find.byIcon(Icons.add));
     await settle();
     await tester.tap(find.byKey(const ValueKey('deck-select')));
     await tester.pumpAndSettle();
     expect(find.text('选择卡组'), findsOneWidget);
-    await tester.tap(find.text('English::Dance').last);
+    await tester.tap(find.text('英语 › 口语').last);
     await tester.pumpAndSettle();
     expect(find.text('选择卡组'), findsNothing);
-    expect(find.text('English::Dance'), findsOneWidget);
+    expect(find.text('英语 › 口语'), findsOneWidget);
 
     await tester.enterText(
       editable(const ValueKey('field-$kBasicTypeId-0')),
@@ -142,9 +156,7 @@ void main() {
     expect(find.text('已添加 1 张卡片'), findsNothing);
 
     await tester.runAsync(() async {
-      final dance = (await repo.decks()).firstWhere(
-        (d) => d.name == 'English::Dance',
-      );
+      final dance = (await repo.decks()).firstWhere((d) => d.name == '英语::口语');
       expect((await repo.cardsOfDeck(dance.id)).length, 1);
     });
 

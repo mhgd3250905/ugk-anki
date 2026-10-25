@@ -1,0 +1,89 @@
+import 'package:flutter/services.dart';
+import 'package:ugk_core/ugk_core.dart' hide Card;
+
+/// 内置笔记类型的中文名（自建类型原样显示）
+String typeLabel(NoteType t) => switch (t.name) {
+  'Basic' => '问答',
+  'Basic (and reversed card)' => '问答 · 正反都考',
+  'Cloze' => '填空',
+  _ => t.name,
+};
+
+/// 内置字段的中文名（自建字段原样显示）
+String fieldLabel(String name) => switch (name) {
+  'Front' => '正面',
+  'Back' => '背面',
+  'Text' => '正文',
+  'Back Extra' => '补充说明',
+  _ => name,
+};
+
+final _clozeNum = RegExp(r'\{\{c(\d+)::');
+
+/// 把选中的文字变成下一个挖空 {{cN::…}}；没选中时插入空挖空，光标放在里面
+TextEditingValue applyCloze(TextEditingValue v) {
+  var n = 1;
+  for (final m in _clozeNum.allMatches(v.text)) {
+    final k = int.parse(m.group(1)!);
+    if (k >= n) n = k + 1;
+  }
+  final sel = v.selection.isValid
+      ? v.selection
+      : TextSelection.collapsed(offset: v.text.length);
+  final picked = sel.textInside(v.text);
+  final open = '{{c$n::';
+  final text =
+      '${sel.textBefore(v.text)}$open$picked}}${sel.textAfter(v.text)}';
+  final cursor = sel.start + open.length + picked.length;
+  return TextEditingValue(
+    text: text,
+    selection: TextSelection.collapsed(
+      offset: picked.isEmpty ? cursor : cursor + 2,
+    ),
+  );
+}
+
+/// 添加前检查，返回给用户看的提示；没问题返回 null
+String? addNoteProblem(NoteType type, List<String> fields) {
+  final first = stripHtml(fields.first).trim();
+  if (type.kind == NoteKind.cloze) {
+    if (first.isEmpty) return '正文还没填';
+    if (!_clozeNum.hasMatch(fields.first)) {
+      return '还没有挖空：在正文下面点选要考的字，选中的会变蓝';
+    }
+    return null;
+  }
+  if (first.isEmpty) return '${fieldLabel(type.fields.first.name)}还没填';
+  return null;
+}
+
+/// 卡组显示名：内置的 Default 显示成「默认」，层级用「›」连接，
+/// 不让用户看到内部的 :: 写法
+String deckLabel(String name) =>
+    name.split('::').map((p) => p == 'Default' ? '默认' : p).join(' › ');
+
+/// 用户输入的卡组名：去掉首尾空格，把 :: 换成全角冒号，
+/// 避免误建出层级（层级只通过「放在哪个卡组里」来选）
+String cleanDeckName(String input) => input.trim().replaceAll('::', '：');
+
+/// 复习按钮上的间隔（核心层输出 Anki 风格的 <1m / 4d / 1.5mo / 2y）
+/// 转成中文：1分钟后 / 4天后 / 1.5个月后 / 2年后
+String zhInterval(String s) {
+  final m = RegExp(r'^<?([\d.]+)(m|h|d|mo|y)$').firstMatch(s);
+  if (m == null) return s;
+  final unit = switch (m.group(2)) {
+    'm' => '分钟',
+    'h' => '小时',
+    'd' => '天',
+    'mo' => '个月',
+    _ => '年',
+  };
+  return '${m.group(1)}$unit后';
+}
+
+/// 标签输入框里的文字拆成标签：空格、逗号、顿号都算分隔
+List<String> splitTags(String s) => s
+    .split(RegExp(r'[\s,，、;；]+'))
+    .map((t) => t.trim())
+    .where((t) => t.isNotEmpty)
+    .toList();

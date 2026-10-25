@@ -32,6 +32,7 @@ class GlassPillButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.primary = false,
+    this.danger = false,
     this.height = UgkSize.barHeight,
     super.key,
   });
@@ -39,13 +40,18 @@ class GlassPillButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final bool primary;
+
+  /// 危险操作：红色粗字
+  final bool danger;
   final double height;
 
   @override
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final enabled = onTap != null;
-    final color = primary
+    final color = danger
+        ? UgkColors.again
+        : primary
         ? UgkColors.newBlue
         : onSurface.withValues(alpha: 0.7);
     return GestureDetector(
@@ -64,7 +70,9 @@ class GlassPillButton extends StatelessWidget {
                 style: TextStyle(
                   color: enabled ? color : color.withValues(alpha: 0.35),
                   fontSize: UgkText.button,
-                  fontWeight: primary ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: primary || danger
+                      ? FontWeight.w700
+                      : FontWeight.w500,
                 ),
               ),
             ),
@@ -83,6 +91,7 @@ class GlassTextField extends StatelessWidget {
     this.autofocus = false,
     this.maxLines = 1,
     this.onSubmitted,
+    this.onChanged,
     super.key,
   });
 
@@ -91,6 +100,7 @@ class GlassTextField extends StatelessWidget {
   final bool autofocus;
   final int maxLines;
   final ValueChanged<String>? onSubmitted;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +118,7 @@ class GlassTextField extends StatelessWidget {
         minLines: 1,
         maxLines: maxLines,
         onSubmitted: onSubmitted,
+        onChanged: onChanged,
         cursorColor: UgkColors.newBlue,
         style: TextStyle(color: onSurface, fontSize: UgkText.field),
         decoration: InputDecoration.collapsed(
@@ -261,15 +272,21 @@ Future<T?> _showGlassRoute<T>(
     barrierLabel: '关闭',
     barrierColor: const Color(0x33000000),
     transitionDuration: const Duration(milliseconds: 260),
+    // 软键盘弹出时整体上移到键盘上方，空间不够就滚动
     pageBuilder: (ctx, _, _) => GlassLayer(
-      child: SafeArea(
-        child: Align(
-          alignment: alignment,
-          child: Padding(
-            padding: const EdgeInsets.all(UgkSpace.m),
-            child: Material(
-              type: MaterialType.transparency,
-              child: builder(ctx),
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: SafeArea(
+          child: Align(
+            alignment: alignment,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(UgkSpace.m),
+              child: Material(
+                type: MaterialType.transparency,
+                child: builder(ctx),
+              ),
             ),
           ),
         ),
@@ -349,6 +366,105 @@ Future<String?> showGlassPrompt(
     ),
   );
   // 等退场动画结束再释放
+  Future<void>.delayed(const Duration(milliseconds: 400), controller.dispose);
+  return result;
+}
+
+/// 新建一项并选择放在哪里（例如新建卡组）。不用记任何特殊写法：
+/// 名字照常输入，上级从列表里点选。返回 (名字, 上级下标)，上级为 null 表示放在最外层。
+Future<(String, int?)?> showGlassNameAndPlace(
+  BuildContext context, {
+  required String title,
+  required String nameHint,
+  required String placeTitle,
+  required String noneLabel,
+  required List<String> places,
+  String confirmLabel = '确定',
+}) async {
+  final controller = TextEditingController();
+  int? place;
+  final result = await _showGlassRoute<(String, int?)>(
+    context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setState) {
+        final onSurface = Theme.of(ctx).colorScheme.onSurface;
+        Widget label(String t) => Padding(
+          padding: const EdgeInsets.only(bottom: UgkSpace.s, left: 2),
+          child: Text(
+            t,
+            style: TextStyle(
+              color: onSurface.withValues(alpha: 0.55),
+              fontSize: UgkText.tag,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: GlassPanel(
+            radius: UgkRadius.card,
+            padding: const EdgeInsets.all(UgkSpace.l),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _DialogTitle(title),
+                const SizedBox(height: UgkSpace.m),
+                label('名称'),
+                GlassTextField(
+                  key: const ValueKey('prompt-field'),
+                  controller: controller,
+                  hint: nameHint,
+                  autofocus: true,
+                ),
+                if (places.isNotEmpty) ...[
+                  const SizedBox(height: UgkSpace.m),
+                  label(placeTitle),
+                  GlassSelectRow(
+                    key: const ValueKey('place-select'),
+                    value: place == null ? noneLabel : places[place!],
+                    onTap: () async {
+                      // -1 表示「最外层」，取消返回 null
+                      final picked = await showGlassPicker<int>(
+                        ctx,
+                        title: placeTitle,
+                        items: [-1, for (var i = 0; i < places.length; i++) i],
+                        selected: place ?? -1,
+                        labelOf: (i) => i < 0 ? noneLabel : places[i],
+                      );
+                      if (picked != null) {
+                        setState(() => place = picked < 0 ? null : picked);
+                      }
+                    },
+                  ),
+                ],
+                const SizedBox(height: UgkSpace.l),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GlassPillButton(
+                        label: '取消',
+                        onTap: () => Navigator.of(ctx).pop(),
+                      ),
+                    ),
+                    const SizedBox(width: UgkSpace.ratingGap),
+                    Expanded(
+                      child: GlassPillButton(
+                        label: confirmLabel,
+                        primary: true,
+                        onTap: () =>
+                            Navigator.of(ctx).pop((controller.text, place)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
   Future<void>.delayed(const Duration(milliseconds: 400), controller.dispose);
   return result;
 }
@@ -560,4 +676,144 @@ class _GlassToastHostState extends State<_GlassToastHost>
       ),
     );
   }
+}
+
+/// 操作面板里的一项
+class GlassAction {
+  const GlassAction(this.icon, this.label, {this.danger = false});
+
+  final IconData icon;
+  final String label;
+
+  /// 危险操作用红色
+  final bool danger;
+}
+
+/// 底部操作面板（替代 showModalBottomSheet / PopupMenu）。返回选中的序号，取消返回 null。
+Future<int?> showGlassActions(
+  BuildContext context, {
+  required String title,
+  required List<GlassAction> actions,
+}) {
+  return _showGlassRoute<int>(
+    context,
+    alignment: Alignment.bottomCenter,
+    builder: (ctx) {
+      final onSurface = Theme.of(ctx).colorScheme.onSurface;
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: GlassPanel(
+          radius: UgkRadius.card,
+          padding: const EdgeInsets.fromLTRB(
+            UgkSpace.l,
+            UgkSpace.l,
+            UgkSpace.l,
+            UgkSpace.s,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DialogTitle(title),
+              const SizedBox(height: UgkSpace.s),
+              for (var i = 0; i < actions.length; i++)
+                GestureDetector(
+                  key: ValueKey('action-$i'),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => Navigator.of(ctx).pop(i),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Row(
+                      children: [
+                        Icon(
+                          actions[i].icon,
+                          size: 20,
+                          color: actions[i].danger
+                              ? UgkColors.again
+                              : onSurface.withValues(alpha: 0.6),
+                        ),
+                        const SizedBox(width: UgkSpace.m),
+                        Expanded(
+                          child: Text(
+                            actions[i].label,
+                            style: TextStyle(
+                              color: actions[i].danger
+                                  ? UgkColors.again
+                                  : onSurface,
+                              fontSize: UgkText.field,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+/// 确认弹窗（替代 AlertDialog）。确认返回 true。
+Future<bool> showGlassConfirm(
+  BuildContext context, {
+  required String title,
+  required String message,
+  String confirmLabel = '确定',
+  bool danger = false,
+}) async {
+  final ok = await _showGlassRoute<bool>(
+    context,
+    builder: (ctx) {
+      final onSurface = Theme.of(ctx).colorScheme.onSurface;
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: GlassPanel(
+          radius: UgkRadius.card,
+          padding: const EdgeInsets.all(UgkSpace.l),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _DialogTitle(title),
+              const SizedBox(height: UgkSpace.s),
+              Text(
+                message,
+                style: TextStyle(
+                  color: onSurface.withValues(alpha: 0.7),
+                  fontSize: UgkText.button - 1,
+                  height: 1.45,
+                ),
+              ),
+              const SizedBox(height: UgkSpace.l),
+              Row(
+                children: [
+                  Expanded(
+                    child: GlassPillButton(
+                      label: '取消',
+                      onTap: () => Navigator.of(ctx).pop(false),
+                    ),
+                  ),
+                  const SizedBox(width: UgkSpace.ratingGap),
+                  Expanded(
+                    child: GlassPillButton(
+                      key: const ValueKey('confirm'),
+                      label: confirmLabel,
+                      primary: !danger,
+                      danger: danger,
+                      onTap: () => Navigator.of(ctx).pop(true),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  return ok ?? false;
 }
